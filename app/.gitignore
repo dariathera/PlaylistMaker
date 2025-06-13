@@ -1,0 +1,56 @@
+/build
+
+# Android Studio files
+.idea/
+*.iml
+
+# Gradle files
+.gradle/
+build/
+*/build/
+*/captures/
+*.log
+
+# Local configuration file (sdk path, etc)
+local.properties
+
+# Android specific files
+*.apk
+*.ap_
+*.dex
+*.class
+*.jar
+*.war
+*.ear
+*.so
+*.dylib
+*.h
+*.hpp
+*.o
+*.obj
+*.a
+*.lib
+*.dll
+*.exe
+*.hprof
+
+# Miscellaneous
+*.DS_Store
+*.swp
+*.swo
+*.tmp
+*.temp
+*.bak  # Оставьте только одно упоминание
+*.orig
+*.out
+*.pid
+*.seed
+*.pid.lock
+*.tgz
+*.gz
+*.zip
+*.tar
+*.tar.gz
+*.tar.bz2
+*.7z
+*.rar
