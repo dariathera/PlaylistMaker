@@ -19,7 +19,11 @@
             android:layout_width="48dp"
             android:layout_height="48dp"
 
-            android:backgroundTint="@color/YP_White"
+            android:background="@android:color/transparent"
+            android:backgroundTint="@android:color/transparent"
+            android:stateListAnimator="@null"
+            android:elevation="0dp"
+            android:outlineProvider="none"
 
             android:contentDescription="@string/go_back"
             android:padding="12dp"
