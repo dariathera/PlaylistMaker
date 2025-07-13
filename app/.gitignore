@@ -3,6 +3,7 @@
 # Android Studio files
 .idea/
 *.iml
+.idea
 
 # Gradle files
 .gradle/
