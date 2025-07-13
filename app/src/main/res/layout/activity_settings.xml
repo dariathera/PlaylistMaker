@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/YP_White"
@@ -22,7 +23,7 @@
 
             android:contentDescription="@string/go_back"
             android:padding="12dp"
-            app:icon="@drawable/arrow_back"
+            app:icon="@drawable/ic_arrow_back_24"
             app:iconTint="@color/YP_Black"
             android:foreground="?attr/selectableItemBackground" />
 
@@ -119,7 +120,7 @@
                 android:layout_marginEnd="@dimen/plainTextSection_iconMarginEnd"
 
                 android:importantForAccessibility="no"
-                android:src="@drawable/share" />
+                android:src="@drawable/ic_share_24" />
 
         </RelativeLayout>
 
@@ -153,7 +154,7 @@
                 android:layout_marginEnd="@dimen/plainTextSection_iconMarginEnd"
 
                 android:importantForAccessibility="no"
-                android:src="@drawable/support" />
+                android:src="@drawable/ic_support_24" />
 
         </RelativeLayout>
 
@@ -187,7 +188,7 @@
                 android:layout_marginEnd="@dimen/plainTextSection_iconMarginEnd"
 
                 android:importantForAccessibility="no"
-                android:src="@drawable/arrow_forward" />
+                android:src="@drawable/ic_arrow_forward_24" />
 
         </RelativeLayout>
 

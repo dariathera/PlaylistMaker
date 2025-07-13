@@ -12,15 +12,17 @@ import androidx.core.view.WindowInsetsCompat
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_settings)
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         val btnSettings = findViewById<Button>(R.id.btnGoBack)
         btnSettings.setOnClickListener {
-            val displayIntent = Intent(this, MainActivity::class.java)
-            // FLAG_ACTIVITY_CLEAR_TOP очищает все активности выше MainActivity в стеке, если она уже существует.
-            // FLAG_ACTIVITY_NEW_TASK создает новую задачу для MainActivity, если она еще не существует.
-            displayIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(displayIntent)
             finish() //Удаляет SettingsActivity из стека.
         }
     }
