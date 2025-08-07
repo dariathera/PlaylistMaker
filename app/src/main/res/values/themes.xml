@@ -1,34 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.PlaylistMaker" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- Делаю фон системных панелей прозрачным -->
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/YP_White</item>
-        <item name="colorPrimaryVariant">@color/YP_Text_Gray</item>
-        <item name="colorOnPrimary">@color/YP_Black</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/YP_Blue</item>
-        <item name="colorSecondaryVariant">@color/YP_Light_Gray</item>
-        <item name="colorOnSecondary">@color/YP_White</item>
-        <!-- Customize your theme here. -->
-    </style>
-
-    <style name="Theme.MainActivity" parent="Base.Theme.PlaylistMaker">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/YP_Blue</item>
-        <item name="colorPrimaryVariant">@color/YP_White</item>
-        <item name="colorOnPrimary">@color/YP_White</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/YP_White</item>
-        <item name="colorSecondaryVariant">@color/YP_White</item>
-        <item name="colorOnSecondary">@color/YP_Black</item>
-        <!-- Customize your theme here. -->
-    </style>
+    <style name="Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker" />
 </resources>
