@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    style="@style/VerticalLayout"
+    android:background="?attr/colorPrimary">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btnGoBack"
+            style="@style/ButtonGoBack" />
+
+        <TextView
+            android:text="@string/settings"
+            style="@style/SectionTitle" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="24dp"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/dark_theme"
+                style="@style/SettingsListItemsText" />
+
+            <Switch
+                android:layout_width="56dp"
+                android:layout_height="48dp"
+
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="10dp"
+
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="11dp"
+
+                style="@style/OrdinarySwitchColor"
+
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/share_the_app"
+                style="@style/SettingsListItemsText" />
+
+            <ImageView
+                android:id="@+id/share_the_app"
+                android:contentDescription="@string/share_the_app"
+                android:src="@drawable/ic_share_24"
+                style="@style/SettingsListItemsIcon"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/write_to_support"
+                style="@style/SettingsListItemsText"/>
+
+            <ImageView
+                android:id="@+id/write_to_support"
+                android:contentDescription="@string/write_to_support"
+                android:src="@drawable/ic_support_24"
+                style="@style/SettingsListItemsIcon"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/user_agreement"
+                style="@style/SettingsListItemsText"/>
+
+            <ImageView
+                android:id="@+id/user_agreement"
+                android:contentDescription="@string/user_agreement"
+                android:src="@drawable/ic_arrow_forward_24"
+                style="@style/SettingsListItemsIcon"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
