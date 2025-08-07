@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="YP_Black">#1A1B22</color>
-    <color name="YP_White">#FFFFFF</color>
-    <color name="YP_Blue">#3772E7</color>
-    <color name="YP_Text_Gray">#AEAFB4</color>
-    <color name="YP_Light_Gray">#E6E8EB</color>
-    <color name="YP_Red">#F56B6C</color>
-    <color name="YP_Blue_Light">#9FBBF3</color>
-    <color name="YP_Background">#7F1A1B22</color>
-    <color name="YP_Turquoise">#00D6C3</color>
-    <color name="YP_Turquoise_Light">#76EAE0</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
 </resources>
