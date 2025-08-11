@@ -25,6 +25,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var clearButton: ImageView
     private lateinit var background: LinearLayout
     private lateinit var inputMethodManager: InputMethodManager
+    private var userInput: String = EMPTY_LINE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,14 +90,6 @@ class SearchActivity : AppCompatActivity() {
 
     //------------------------------------------------------------------------------------
     // Сохранение пользовательского ввода
-
-    companion object {
-        private const val USER_INPUT = "USER_INPUT"
-        private const val EMPTY_LINE = ""
-    }
-
-    var userInput: String = EMPTY_LINE
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(USER_INPUT, userInput)
@@ -106,5 +99,10 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         userInput = savedInstanceState.getString(USER_INPUT, EMPTY_LINE)
         inputEditText.setText(userInput)
+    }
+
+    companion object {
+        private const val USER_INPUT = "USER_INPUT"
+        private const val EMPTY_LINE = ""
     }
 }

@@ -35,12 +35,7 @@ class SettingsActivity : AppCompatActivity() {
                 type = "text/plain"
                 putExtra(Intent.EXTRA_TEXT, message)
             }
-            // Проверяем, есть ли приложения, которые могут обработать этот Intent
-            if (shareIntent.resolveActivity(packageManager) != null) {
-                startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)))
-            } else {
-                Toast.makeText(this@SettingsActivity, getString(R.string.there_is_no_app), Toast.LENGTH_LONG).show()
-            }
+            startActivity(Intent.createChooser(shareIntent, getString(R.string.share_to)))
         }
 
         val btnWriteToSupport = findViewById<ImageView>(R.id.write_to_support)
@@ -51,23 +46,14 @@ class SettingsActivity : AppCompatActivity() {
                 putExtra(Intent.EXTRA_SUBJECT, getString(R.string.subject_of_mail_to_developers))
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.text_of_mail_to_developers))
             }
-            if (supportIntent.resolveActivity(packageManager) != null) {
-                startActivity(supportIntent)
-            } else {
-                Toast.makeText(this@SettingsActivity, getString(R.string.there_is_no_app), Toast.LENGTH_LONG).show()
-            }
+            startActivity(supportIntent)
         }
 
         val btnUserAgreement = findViewById<ImageView>(R.id.user_agreement)
         btnUserAgreement.setOnClickListener {
             val url = Uri.parse(getString(R.string.user_agreement_link))
             val userAgreementIntent = Intent(Intent.ACTION_VIEW, url)
-
-            if (userAgreementIntent.resolveActivity(packageManager) != null) {
-                startActivity(userAgreementIntent)
-            } else {
-                Toast.makeText(this@SettingsActivity, getString(R.string.there_is_no_app), Toast.LENGTH_LONG).show()
-            }
+            startActivity(userAgreementIntent)
         }
     }
 }
