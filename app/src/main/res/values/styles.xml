@@ -87,16 +87,16 @@
         <item name="android:textSize">@dimen/titleText</item>
     </style>
 
+
     <style name="SearchEditText">
-        <item name="android:textColor">@color/YP_Text_Gray</item>
+        <item name="android:textColor">@color/YP_Black</item>
         <item name="android:textColorHint">@color/YP_Text_Gray</item>
         <item name="tint">@color/YP_Text_Gray</item>
         <item name="android:layout_width">21dp</item>
         <item name="android:layout_height">21dp</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
         <item name="android:importantForAccessibility">yes</item>
         <item name="android:focusable">true</item>
+
     </style>
 
 

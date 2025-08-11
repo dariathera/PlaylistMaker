@@ -23,59 +23,68 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:background="@drawable/rounded_background">
 
-        <!-- Если поставить размеры
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp" ,
-        как в figma, то получается соотношение
-        размеров не такое, как на картинке. -->
-    <ImageView
-        style="@style/SearchEditText"
-        android:id="@+id/btnSearch"
-        android:src="@drawable/ic_search_24"
-        android:contentDescription="@string/search"
-        android:layout_marginStart="12dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_gravity="start">
 
-    <EditText
-        android:id="@+id/editText"
-        style="@style/SearchEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginTop="8.5dp"
-        android:layout_marginBottom="8.5dp"
-        android:background="@null"
-        android:fontFamily="@font/ys_display_regular"
-        android:gravity="start"
-        android:hint="@string/search"
-        android:inputType="text"
-        android:lines="1"
-        android:textSize="@dimen/plainText"
-        android:layout_weight="1"
-        tools:ignore="TouchTargetSizeCheck" />
+            <!-- Если поставить размеры
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp" ,
+            как в figma, то получается соотношение
+            размеров не такое, как на картинке. -->
+            <ImageView
+                style="@style/SearchEditText"
+                android:id="@+id/btnSearch"
+                android:src="@drawable/ic_search_24"
+                android:contentDescription="@string/search"
+                android:layout_marginStart="12dp"/>
 
-    <ImageView
-        android:id="@+id/clearIcon"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
-        android:visibility="gone"
-        android:layout_marginEnd="12dp"
-        android:contentDescription="@string/clear_text"
-        style="@style/SearchEditText" />
+            <EditText
+                android:id="@+id/editText"
+                style="@style/SearchEditText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginTop="8.5dp"
+                android:layout_marginBottom="8.5dp"
+                android:background="@null"
+                android:fontFamily="@font/ys_display_regular"
+                android:gravity="start"
+                android:hint="@string/search"
+                android:inputType="text"
+                android:lines="1"
+                android:textSize="@dimen/plainText"
+                android:layout_weight="1"
+                tools:ignore="TouchTargetSizeCheck" />
 
-    </LinearLayout>
+        </LinearLayout>
 
+        <ImageView
+            android:id="@+id/clearIcon"
+            android:src="@drawable/ic_close_16"
+            android:visibility="gone"
+            android:layout_gravity="center|end"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="@string/clear_text"
+            style="@style/SearchEditText"
+            />
+
+    </FrameLayout>
 
 
 

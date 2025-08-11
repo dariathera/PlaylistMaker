@@ -11,8 +11,6 @@
         <item name="tint">@color/YP_Black</item>
         <item name="android:layout_width">21dp</item>
         <item name="android:layout_height">21dp</item>
-        <item name="android:layout_marginTop">10dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
         <item name="android:importantForAccessibility">yes</item>
         <item name="android:focusable">true</item>
     </style>
