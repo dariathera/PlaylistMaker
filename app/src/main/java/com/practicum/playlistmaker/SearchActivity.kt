@@ -91,8 +91,8 @@ class SearchActivity : AppCompatActivity() {
     // Сохранение пользовательского ввода
 
     companion object {
-        const val USER_INPUT = "USER_INPUT"
-        const val EMPTY_LINE = ""
+        private const val USER_INPUT = "USER_INPUT"
+        private const val EMPTY_LINE = ""
     }
 
     var userInput: String = EMPTY_LINE
