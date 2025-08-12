@@ -39,17 +39,10 @@
             android:gravity="center"
             android:layout_gravity="start">
 
-            <!-- Если поставить размеры
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp" ,
-            как в figma, то получается соотношение
-            размеров не такое, как на картинке. -->
             <ImageView
                 style="@style/SearchEditText"
                 android:id="@+id/btnSearch"
-                android:src="@drawable/ic_search_24"
+                android:src="@drawable/ic_search_16"
                 android:contentDescription="@string/search"
                 android:layout_marginStart="12dp"/>
 
