@@ -8,4 +8,6 @@
     <color name="YP_Red">#F56B6C</color>
     <color name="YP_Blue_Light">#9FBBF3</color>
     <color name="YP_Background">#7F1A1B22</color>
+    <color name="YP_Turquoise">#00D6C3</color>
+    <color name="YP_Turquoise_Light">#76EAE0</color>
 </resources>
