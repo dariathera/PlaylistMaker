@@ -54,7 +54,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginTop="8.5dp"
-                android:layout_marginBottom="8.5dp"
+                android:layout_marginBottom="7.5dp"
                 android:background="@null"
                 android:fontFamily="@font/ys_display_regular"
                 android:gravity="start"
@@ -79,8 +79,13 @@
 
     </FrameLayout>
 
-
-
-
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="16dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
 </LinearLayout>
+

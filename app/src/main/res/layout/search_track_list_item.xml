@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="61dp"
+    android:gravity="center"
+    android:paddingStart="7dp"
+    android:paddingEnd="0dp"
+    android:orientation="horizontal">
+
+    <!-- Цвет плейсходера в обеих темах одинаков;
+         он задан в ресурсном файле ic_artwork_placeholder_45 -->
+    <ImageView
+        android:id="@+id/artwork"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        tools:srcCompat="@drawable/ic_artwork_placeholder_45" />
+
+    <LinearLayout
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="start"
+        android:layout_weight="1"
+        android:layout_marginTop="14dp"
+        android:layout_marginBottom="14dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/trackName"
+            android:layout_width="match_parent"
+            android:layout_height="19dp"
+            android:textColor="?attr/colorOnPrimary"
+            android:fontFamily="@font/ys_display_regular"
+            android:textSize="@dimen/plainText"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="1"
+            tools:text="No Reply"/>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="13dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="1dp"
+            android:gravity="start">
+
+            <!-- Когда текст помещается полностью android:layout_weight="0",
+                 когда нет - android:layout_weight="1" .
+                 Программно нужно измерять длину текстового поля при
+                 android:layout_width="0dp"
+                 android:layout_weight="1" .
+                 Значения по умолчанию
+                 android:layout_width="wrap_content"
+                 android:layout_weight="0" . -->
+            <TextView
+                style="@style/SearchTrackListItemSmallText"
+                android:id="@+id/artistName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_weight="0"
+                tools:text="The Beatles"/>
+
+            <ImageView
+                style="@style/SearchTrackListItemSmallText"
+                android:id="@+id/dot"
+                android:src="@drawable/ic_dot_3"
+                android:layout_width="3dp"
+                android:layout_height="3dp"
+                android:layout_margin="5dp"/>
+
+            <TextView
+                style="@style/SearchTrackListItemSmallText"
+                android:id="@+id/trackTime"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                tools:text="00:00:00"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/go_to_track"
+        android:contentDescription="@string/go_to_track"
+        android:src="@drawable/ic_arrow_forward_24"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="12dp"
+        app:tint="?attr/colorPrimaryVariant" />
+
+</LinearLayout>

@@ -2,6 +2,7 @@
 <resources>
     <dimen name="titleText">22sp</dimen>
     <dimen name="plainText">16sp</dimen>
+    <dimen name="smallText">11sp</dimen>
     <dimen name="btnMarginVertical">8dp</dimen>
     <dimen name="btnСornerRadius">16dp</dimen>
     <dimen name="btnIconPadding">8dp</dimen>
