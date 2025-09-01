@@ -68,7 +68,9 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:layout_weight="0"
-                tools:text="The Beatles"/>
+                tools:text="The Beatles"
+
+                />
 
             <ImageView
                 style="@style/SearchTrackListItemSmallText"
