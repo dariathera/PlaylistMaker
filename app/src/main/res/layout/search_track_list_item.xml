@@ -46,20 +46,15 @@
 
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="13dp"
             android:orientation="horizontal"
             android:layout_marginTop="1dp"
             android:gravity="start">
 
-            <!-- Когда текст помещается полностью android:layout_weight="0",
-                 когда нет - android:layout_weight="1" .
-                 Программно нужно измерять длину текстового поля при
-                 android:layout_width="0dp"
-                 android:layout_weight="1" .
-                 Значения по умолчанию
-                 android:layout_width="wrap_content"
-                 android:layout_weight="0" . -->
+            <!-- Если использовать android:layout_width="0dp",
+            то при переиспользовании ViewHolder'а не обновляется
+             ширина поля. -->
             <TextView
                 style="@style/SearchTrackListItemSmallText"
                 android:id="@+id/artistName"
@@ -67,10 +62,8 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:layout_weight="0"
-                tools:text="The Beatles"
-
-                />
+                android:layout_weight="1"
+                tools:text="The Beatles" />
 
             <ImageView
                 style="@style/SearchTrackListItemSmallText"
