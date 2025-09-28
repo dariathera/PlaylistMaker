@@ -14,5 +14,6 @@
     <string name="subject_of_mail_to_developers">Message to the developers of the Playlist Maker app</string>
     <string name="text_of_mail_to_developers">Thanks to the developers for a cool app!</string>
     <string name="clear_text">Clear search query</string>
+    <string name="go_to_track">Go to track</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.activities
 
 import android.content.Context
 import android.os.Bundle
@@ -10,15 +10,16 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.data.lists.searchTrack.SearchTrackAdapter
+import com.practicum.playlistmaker.data.mockdata.mockTrackList
 
 class SearchActivity : AppCompatActivity() {
-
-    // Логика работы с кнопками
 
     private lateinit var btnGoBack: Button
     private lateinit var inputEditText: EditText
@@ -26,6 +27,8 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var background: LinearLayout
     private lateinit var inputMethodManager: InputMethodManager
     private var userInput: String = EMPTY_LINE
+    private lateinit var recyclerView : RecyclerView
+    private lateinit var searchTrackAdapter : SearchTrackAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,6 +40,11 @@ class SearchActivity : AppCompatActivity() {
         clearButton = findViewById(R.id.clearIcon)
         background = findViewById(R.id.background)
         inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        // Создание списка треков
+        recyclerView = findViewById(R.id.recyclerView)
+        searchTrackAdapter = SearchTrackAdapter(mockTrackList())
+        recyclerView.adapter = searchTrackAdapter
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.background)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -101,6 +109,8 @@ class SearchActivity : AppCompatActivity() {
         inputEditText.setText(userInput)
     }
 
+    //------------------------------------------------------------------------------------
+    // Константы
     companion object {
         private const val USER_INPUT = "USER_INPUT"
         private const val EMPTY_LINE = ""
