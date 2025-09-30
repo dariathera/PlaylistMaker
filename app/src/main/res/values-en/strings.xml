@@ -15,5 +15,7 @@
     <string name="text_of_mail_to_developers">Thanks to the developers for a cool app!</string>
     <string name="clear_text">Clear search query</string>
     <string name="go_to_track">Go to track</string>
-
+    <string name="connection_problems">Connection problems\n\nDownload failed. Check your\ninternet connection</string>
+    <string name="nothing_found">Nothing found</string>
+    <string name="update">Update</string>
 </resources>

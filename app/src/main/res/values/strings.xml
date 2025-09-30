@@ -17,6 +17,9 @@
     <string name="user_agreement_link" translatable="false">https://yandex.ru/legal/practicum_offer/ru/</string>
     <string name="clear_text">Очистить поисковый запрос</string>
     <string name="go_to_track">Перейти к треку</string>
+    <string name="connection_problems">Проблемы со связью\n\nЗагрузка не удалась. Проверьте \nподключение к интернету</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="update">Обновить</string>
 
 
 </resources>

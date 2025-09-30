@@ -1,5 +1,3 @@
-
-
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -52,4 +50,11 @@ dependencies {
     implementation(libs.material.v1130)
     implementation(libs.glide)
     annotationProcessor(libs.compiler)
+
+    // Для работы с сетью
+    implementation(libs.gson)
+    implementation(libs.retrofit)
+    implementation(libs.retrofit2.converter.gson)
+
+
 }

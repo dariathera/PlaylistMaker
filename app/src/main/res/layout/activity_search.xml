@@ -30,7 +30,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:background="@drawable/rounded_background">
+        android:background="@drawable/rounded_background_8">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -63,7 +63,10 @@
                 android:lines="1"
                 android:textSize="@dimen/plainText"
                 android:layout_weight="1"
-                tools:ignore="TouchTargetSizeCheck" />
+                tools:ignore="TouchTargetSizeCheck"
+
+                android:imeOptions="actionDone"
+                android:singleLine="true"/>
 
         </LinearLayout>
 
@@ -85,7 +88,58 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/nothingFound"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical|center_horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="@dimen/bigIconSize"
+            android:layout_height="@dimen/bigIconSize"
+            android:src="@drawable/ic_nothing_found_120"
+            android:scaleType="centerInside"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:text="@string/nothing_found"
+            style="@style/TextBanner"
+            android:visibility="visible"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/connectionProblems"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical|center_horizontal"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="@dimen/bigIconSize"
+            android:layout_height="@dimen/bigIconSize"
+            android:src="@drawable/ic_connection_problems_120"
+            android:scaleType="centerInside"
+            android:layout_margin="0dp"
+            android:padding="0dp"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:text="@string/connection_problems"
+            style="@style/TextBanner"/>
+
+        <Button
+            android:id="@+id/btn_update"
+            style="@style/Button"
+            android:text="@string/update"/>
+    </LinearLayout>
 
 </LinearLayout>
 
