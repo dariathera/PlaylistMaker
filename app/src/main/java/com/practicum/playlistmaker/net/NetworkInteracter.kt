@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.net
 
-import android.util.Log
 import com.practicum.playlistmaker.data.objects.Track
 import retrofit2.Call
 import retrofit2.Callback
@@ -12,10 +11,8 @@ import java.util.Locale
 
 class NetworkInteracter {
 
-    private val itunesBaseUrl = "https://itunes.apple.com"
-
     private val retrofit = Retrofit.Builder()
-        .baseUrl(itunesBaseUrl)
+        .baseUrl(ITUNES_BASE_URL)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 
@@ -23,7 +20,7 @@ class NetworkInteracter {
 
     fun getMusic(
         text: String,
-        callback: (SearchActivityViewMarker, MutableList<Track>?) -> Unit)
+        callback: (GetMusicResponse) -> Unit)
     {
 
         itunesService
@@ -35,36 +32,37 @@ class NetworkInteracter {
                     if (response.isSuccessful) {
                         val data = response.body()
                         if (data != null) {
-                            Log.d("getMusic", "${data.resultCount} tracks found")
                             if (data.resultCount == 0 || data.results.isEmpty()) {
-                                callback(SearchActivityViewMarker.NOTHING_FOUND, null)
+                                callback(EmptyResponse)
                             } else {
                                 callback(
-                                    SearchActivityViewMarker.GOOD_RESPONSE,
-                                    data.results.map { result ->
-                                        Track(
-                                            trackName = result.trackName,
-                                            artistName = result.artistName,
-                                            trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(result.trackTimeMillis),
-                                            artworkUrl100 = result.artworkUrl100
-                                        )
-                                    }.toMutableList()
+                                    GoodResponse(
+                                        data.results.map { result ->
+                                            Track(
+                                                trackName = result.trackName,
+                                                artistName = result.artistName,
+                                                trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(result.trackTimeMillis),
+                                                artworkUrl100 = result.artworkUrl100
+                                            )
+                                        }.toMutableList()
+                                    )
                                 )
                             }
                         } else {
-                            Log.e("getMusic", "Server error: ${response.code()}")
-                            callback(SearchActivityViewMarker.ERROR, null)
+                            callback(BadResponse)
                         }
                     } else {
-                        Log.e("getMusic", "Server error: ${response.code()}")
-                        callback(SearchActivityViewMarker.ERROR, null)
+                        callback(BadResponse)
                     }
                 }
 
                 override fun onFailure(call: Call<ItunesResponse>, t: Throwable) {
-                    Log.e("getMusic", "Network error", t)
-                    callback(SearchActivityViewMarker.ERROR, null)
+                    callback(BadResponse)
                 }
             })
+    }
+
+    companion object {
+        const val ITUNES_BASE_URL = "https://itunes.apple.com"
     }
 }

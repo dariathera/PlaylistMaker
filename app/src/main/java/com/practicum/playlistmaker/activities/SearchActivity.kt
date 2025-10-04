@@ -11,7 +11,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -20,8 +19,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.data.lists.searchTrack.SearchTrackAdapter
 import com.practicum.playlistmaker.data.mockdata.mockTrackList
+import com.practicum.playlistmaker.net.BadResponse
+import com.practicum.playlistmaker.net.EmptyResponse
+import com.practicum.playlistmaker.net.GoodResponse
 import com.practicum.playlistmaker.net.NetworkInteracter
-import com.practicum.playlistmaker.net.SearchActivityViewMarker
 
 class SearchActivity : AppCompatActivity() {
 
@@ -140,21 +141,20 @@ class SearchActivity : AppCompatActivity() {
 
     private fun makeRequest() {
         if (!inputEditText.text.isEmpty()) {
-            networkInteracter.getMusic(inputEditText.text.toString()) { marker, tracks ->
-                when (marker) {
-                    SearchActivityViewMarker.GOOD_RESPONSE -> {
-                        // Все GOOD_RESPONSE прошли проверку на tracks.isEmpty() в getMusic(...)
-                        searchTrackAdapter.updateData(tracks!!)
+            networkInteracter.getMusic(inputEditText.text.toString()) { response ->
+                when (response) {
+                    is GoodResponse -> {
+                        searchTrackAdapter.updateData(response.tracks)
                         recyclerView.visibility = View.VISIBLE
                         nothingFoundLayout.visibility = View.GONE
                         connectionProblemsLayout.visibility = View.GONE
                     }
-                    SearchActivityViewMarker.NOTHING_FOUND -> {
+                    is EmptyResponse -> {
                         recyclerView.visibility = View.GONE
                         nothingFoundLayout.visibility = View.VISIBLE
                         connectionProblemsLayout.visibility = View.GONE
                     }
-                    SearchActivityViewMarker.ERROR -> {
+                    is BadResponse -> {
                         recyclerView.visibility = View.GONE
                         nothingFoundLayout.visibility = View.GONE
                         connectionProblemsLayout.visibility = View.VISIBLE
