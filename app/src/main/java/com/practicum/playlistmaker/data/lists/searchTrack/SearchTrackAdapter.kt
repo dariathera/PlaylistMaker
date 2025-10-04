@@ -5,9 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.data.objects.Track
+import com.practicum.playlistmaker.net.ItunesTrackData
 
 class SearchTrackAdapter (
-    private val tracks: List<Track>
+    private val tracks: MutableList<Track>
 ) : RecyclerView.Adapter<SearchTrackViewHolder> () {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchTrackViewHolder {
@@ -23,5 +24,10 @@ class SearchTrackAdapter (
         return tracks.size
     }
 
+    fun updateData(newTracks: MutableList<Track>) {
+        tracks.clear()
+        tracks.addAll(newTracks)
+        notifyDataSetChanged()
+    }
 }
 
