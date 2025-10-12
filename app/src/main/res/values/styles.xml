@@ -53,9 +53,11 @@
         <item name="android:orientation">vertical</item>
     </style>
 
-    <style name="OrdinarySwitchColor">
-        <item name="android:thumbTint">@color/YP_Turquoise</item>
-        <item name="android:trackTint">@color/YP_Turquoise_Light</item>
+    <style name="SettingsListSwitch" parent="SettingsListItemsText">
+        <item name="thumbTint">@color/YP_Light_Gray</item>
+        <item name="trackTint">@color/YP_Text_Gray</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginEnd">@dimen/plainTextSection_iconMarginEnd</item>
     </style>
 
     <style name="ButtonGoBack">

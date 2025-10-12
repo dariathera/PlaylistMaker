@@ -9,6 +9,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.R
 
 class SettingsActivity : AppCompatActivity() {
@@ -54,6 +55,14 @@ class SettingsActivity : AppCompatActivity() {
             val url = Uri.parse(getString(R.string.user_agreement_link))
             val userAgreementIntent = Intent(Intent.ACTION_VIEW, url)
             startActivity(userAgreementIntent)
+        }
+
+        val themeSwitcher = findViewById<
+                com.google.android.material.switchmaterial.SwitchMaterial>(R.id.themeSwitcher)
+        themeSwitcher.setChecked((applicationContext as App).darkTheme)
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+            switcher.setChecked((applicationContext as App).darkTheme)
         }
     }
 }

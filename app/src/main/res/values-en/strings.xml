@@ -18,4 +18,6 @@
     <string name="connection_problems">Connection problems\n\nDownload failed. Check your\ninternet connection</string>
     <string name="nothing_found">Nothing found</string>
     <string name="update">Update</string>
+    <string name="search_history">You\'ve looked for</string>
+    <string name="clear_search_history">Clear history</string>
 </resources>

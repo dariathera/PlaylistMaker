@@ -42,7 +42,8 @@ class NetworkInteracter {
                                                 trackName = result.trackName,
                                                 artistName = result.artistName,
                                                 trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(result.trackTimeMillis),
-                                                artworkUrl100 = result.artworkUrl100
+                                                artworkUrl100 = result.artworkUrl100,
+                                                trackId = result.trackId
                                             )
                                         }.toMutableList()
                                     )

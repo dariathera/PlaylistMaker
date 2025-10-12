@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="OrdinarySwitchColor">
-        <item name="android:thumbTint">@color/YP_Blue</item>
-        <item name="android:trackTint">@color/YP_Blue_Light</item>
+    <style name="SettingsListSwitch" parent="SettingsListItemsText">
+        <item name="thumbTint">@color/YP_Blue</item>
+        <item name="trackTint">@color/YP_Blue_Light</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginEnd">@dimen/plainTextSection_iconMarginEnd</item>
     </style>
 
     <style name="SearchEditText">
