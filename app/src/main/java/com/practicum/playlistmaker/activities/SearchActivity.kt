@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -19,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.data.lists.searchTrack.SearchTrackAdapter
 import com.practicum.playlistmaker.data.mockdata.mockTrackList
+import com.practicum.playlistmaker.data.objects.Track
+import com.practicum.playlistmaker.data.saving.SearchHistorySaver
 import com.practicum.playlistmaker.net.BadResponse
 import com.practicum.playlistmaker.net.EmptyResponse
 import com.practicum.playlistmaker.net.GoodResponse
@@ -38,6 +41,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var nothingFoundLayout : LinearLayout
     private lateinit var connectionProblemsLayout : LinearLayout
     private lateinit var updateButton : Button
+    private lateinit var txtSearchHistory : TextView
+    private lateinit var btnClearSearchHistory : Button
+    private lateinit var savedTracksAdapter : SearchTrackAdapter
+    private lateinit var searchBlock : LinearLayout
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,12 +61,16 @@ class SearchActivity : AppCompatActivity() {
         nothingFoundLayout = findViewById(R.id.nothingFound)
         connectionProblemsLayout = findViewById(R.id.connectionProblems)
         updateButton = findViewById(R.id.btn_update)
-
-
-        // Создание списка треков
+        txtSearchHistory = findViewById(R.id.search_history)
+        btnClearSearchHistory = findViewById(R.id.clear_search_history)
         recyclerView = findViewById(R.id.recyclerView)
-        searchTrackAdapter = SearchTrackAdapter(mockTrackList())
+        searchTrackAdapter = SearchTrackAdapter(ArrayDeque<Track>())
+        savedTracksAdapter = SearchTrackAdapter(SearchHistorySaver.getFromMemory())
         recyclerView.adapter = searchTrackAdapter
+        searchBlock = findViewById(R.id.searchBlock)
+
+        txtSearchHistory.visibility = View.GONE
+        btnClearSearchHistory.visibility = View.GONE
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.background)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -92,11 +105,21 @@ class SearchActivity : AppCompatActivity() {
                     clearButton.visibility = View.VISIBLE
                 }
                 userInput = s.toString()
+                showHistory(inputEditText.hasFocus() && s?.isEmpty() == true)
             }
 
             override fun afterTextChanged(s: Editable?) {
                 // empty
             }
+        }
+
+        inputEditText.setOnFocusChangeListener { view, hasFocus ->
+            showHistory(hasFocus && inputEditText.text.isEmpty())
+        }
+
+        btnClearSearchHistory.setOnClickListener {
+            SearchHistorySaver.clearHistory()
+            showHistory(true)
         }
 
         //------------------------------------------------------------------------------------
@@ -146,16 +169,19 @@ class SearchActivity : AppCompatActivity() {
                     is GoodResponse -> {
                         searchTrackAdapter.updateData(response.tracks)
                         recyclerView.visibility = View.VISIBLE
+                        searchBlock.visibility = View.VISIBLE
                         nothingFoundLayout.visibility = View.GONE
                         connectionProblemsLayout.visibility = View.GONE
                     }
                     is EmptyResponse -> {
                         recyclerView.visibility = View.GONE
+                        searchBlock.visibility = View.GONE
                         nothingFoundLayout.visibility = View.VISIBLE
                         connectionProblemsLayout.visibility = View.GONE
                     }
                     is BadResponse -> {
                         recyclerView.visibility = View.GONE
+                        searchBlock.visibility = View.GONE
                         nothingFoundLayout.visibility = View.GONE
                         connectionProblemsLayout.visibility = View.VISIBLE
                     }
@@ -163,9 +189,29 @@ class SearchActivity : AppCompatActivity() {
             }
         } else {
             recyclerView.visibility = View.GONE
+            searchBlock.visibility = View.GONE
             nothingFoundLayout.visibility = View.GONE
             connectionProblemsLayout.visibility = View.GONE
         }
+    }
+
+    private fun showHistory (isHistoryVisible : Boolean) {
+        txtSearchHistory.visibility =  if (isHistoryVisible) View.VISIBLE else View.GONE
+        btnClearSearchHistory.visibility =  if (isHistoryVisible) View.VISIBLE else View.GONE
+        // emptyBlock.visibility = if (isHistoryVisible) View.VISIBLE else View.GONE
+        savedTracksAdapter.updateData(SearchHistorySaver.getFromMemory())
+        recyclerView.adapter = if (isHistoryVisible) savedTracksAdapter else searchTrackAdapter
+        recyclerView.visibility = View.VISIBLE
+        searchBlock.visibility = View.VISIBLE
+        if (SearchHistorySaver.getFromMemory().isEmpty()) {
+            hideHistory()
+        }
+    }
+
+    private fun hideHistory() {
+        recyclerView.visibility = View.GONE
+        txtSearchHistory.visibility = View.GONE
+        btnClearSearchHistory.visibility =  View.GONE
     }
 
     //------------------------------------------------------------------------------------
