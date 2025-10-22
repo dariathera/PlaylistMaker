@@ -25,8 +25,8 @@ class MainActivity : AppCompatActivity() {
         if (app != null) {
             val sharedPrefs : SharedPreferences = app.getSharedPreferences(
                 app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE)
-            val lastScreen = sharedPrefs.getString(app.LAST_SCREEN_KEY, "main")  // "main" — дефолт
-            if (lastScreen == "audioplayer") {
+            val lastScreen = sharedPrefs.getString(app.LAST_SCREEN_KEY, ScreenState.MAIN.displayName)  // "main" — дефолт
+            if (lastScreen == ScreenState.AUDIOPLAYER.displayName) {
                 val intent = Intent(this, AudioplayerActivity::class.java)
                 startActivity(intent)
 
@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
             val sharedPrefs: SharedPreferences = app.getSharedPreferences(
                 app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE
             )
-            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, "main").apply()
+            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, ScreenState.MAIN.displayName).apply()
         }
     }
 }

@@ -74,7 +74,7 @@ class SettingsActivity : AppCompatActivity() {
             val sharedPrefs: SharedPreferences = app.getSharedPreferences(
                 app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE
             )
-            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, "main").apply()
+            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, ScreenState.SETTINGS.displayName).apply()
         }
     }
 }

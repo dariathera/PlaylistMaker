@@ -103,7 +103,7 @@ class AudioplayerActivity : AppCompatActivity() {
             val sharedPrefs: SharedPreferences = app.getSharedPreferences(
                 app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE
             )
-            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, "audioplayer").apply()
+            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, ScreenState.AUDIOPLAYER.displayName).apply()
         }
     }
 }
