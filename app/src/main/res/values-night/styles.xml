@@ -32,4 +32,9 @@
         <item name="backgroundTint">@color/YP_White</item>
         <item name="android:textAllCaps">false</item>
     </style>
+
+    <style name="ReverseContentColor">
+        <item name="tint">@color/YP_Black</item>
+        <item name="android:textColor">@color/YP_Black</item>
+    </style>
 </resources>

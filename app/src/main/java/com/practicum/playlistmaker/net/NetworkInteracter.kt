@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.text.SimpleDateFormat
 import java.util.Locale
+import kotlin.String
 
 class NetworkInteracter {
 
@@ -43,7 +44,11 @@ class NetworkInteracter {
                                                 artistName = result.artistName,
                                                 trackTime = SimpleDateFormat("mm:ss", Locale.getDefault()).format(result.trackTimeMillis),
                                                 artworkUrl100 = result.artworkUrl100,
-                                                trackId = result.trackId
+                                                trackId = result.trackId,
+                                                album = result.collectionName,
+                                                year = result.releaseDate?.substring(0, 4)?.toInt(),
+                                                genre = result.primaryGenreName,
+                                                country = result.country
                                             )
                                         }.toMutableList()
                                     )

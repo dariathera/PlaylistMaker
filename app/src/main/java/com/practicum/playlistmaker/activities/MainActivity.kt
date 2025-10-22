@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.activities
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -8,7 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.data.objects.Track
 
 
 class MainActivity : AppCompatActivity() {
@@ -16,6 +19,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
+
+        // Если в прошлый раз работа приложения завершилась на экране аудиоплеера, перенаправляем пользователся на экран аудиоплеера
+        val app = App.getInstance()
+        if (app != null) {
+            val sharedPrefs : SharedPreferences = app.getSharedPreferences(
+                app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE)
+            val lastScreen = sharedPrefs.getString(app.LAST_SCREEN_KEY, "main")  // "main" — дефолт
+            if (lastScreen == "audioplayer") {
+                val intent = Intent(this, AudioplayerActivity::class.java)
+                startActivity(intent)
+
+                // Не выходим из main activity, чтобы на экране аудиоплеера корректно работала кнопка назад
+                // finish()
+                // return
+            }
+        }
+
+        // Если пользователь остаётся на главном экране
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -46,7 +67,19 @@ class MainActivity : AppCompatActivity() {
             startActivity(displayIntent)
         }
     }
+
+    override fun onPause() {
+        super.onPause()
+        val app = App.getInstance()
+        if (app != null) {
+            val sharedPrefs: SharedPreferences = app.getSharedPreferences(
+                app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE
+            )
+            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, "main").apply()
+        }
+    }
 }
+
 
 
 

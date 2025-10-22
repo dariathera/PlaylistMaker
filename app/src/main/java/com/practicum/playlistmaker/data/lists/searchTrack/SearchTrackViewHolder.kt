@@ -10,6 +10,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.data.objects.Track
+import com.practicum.playlistmaker.tools.DrawingTools
 
 
 class SearchTrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -27,16 +28,10 @@ class SearchTrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
             .load(model.artworkUrl100)
             .placeholder(R.drawable.ic_artwork_placeholder_45)
             .centerCrop()
-            .transform(RoundedCorners(dpToPx(roundRadiusDp, itemView.context)))
+            .transform(RoundedCorners(DrawingTools.dpToPx(roundRadiusDp, itemView.context)))
             .into(artwork)
     }
 
-    private fun dpToPx(dp: Float, context: Context): Int {
-        return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            dp,
-            context.resources.displayMetrics).toInt()
-    }
 }
 
 

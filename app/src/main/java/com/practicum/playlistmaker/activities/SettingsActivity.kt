@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.activities
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
@@ -63,6 +64,17 @@ class SettingsActivity : AppCompatActivity() {
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             (applicationContext as App).switchTheme(checked)
             switcher.setChecked((applicationContext as App).darkTheme)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val app = App.getInstance()
+        if (app != null) {
+            val sharedPrefs: SharedPreferences = app.getSharedPreferences(
+                app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE
+            )
+            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, "main").apply()
         }
     }
 }
