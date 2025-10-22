@@ -9,6 +9,7 @@
     android:id="@+id/main">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:background="?attr/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -92,31 +93,20 @@
 
         <ImageButton
             android:id="@+id/btnPlaylist"
+            style="@style/RoundSideButton"
             android:layout_marginTop="54dp"
             android:src="@drawable/ic_playlist_230"
-            android:padding="14dp"
-            android:layout_width="51dp"
-            android:layout_height="51dp"
-            android:scaleType="centerInside"
-            android:background="@drawable/round_button"
-            android:backgroundTint="@color/YP_Background"
             app:layout_constraintStart_toEndOf="@id/leftBorder"
-            app:layout_constraintTop_toBottomOf="@id/artistName"
-            />
+            app:layout_constraintTop_toBottomOf="@id/artistName"/>
 
         <ImageButton
             android:id="@+id/btnLike"
-            android:layout_marginTop="54dp"
+            style="@style/RoundSideButton"
             android:src="@drawable/ic_blank_heart_250"
-            android:padding="14dp"
-            android:paddingTop="16dp"
-            android:layout_width="51dp"
-            android:layout_height="51dp"
-            android:scaleType="centerInside"
-            android:background="@drawable/round_button"
-            android:backgroundTint="@color/YP_Background"
             app:layout_constraintEnd_toStartOf="@id/rightBorder"
-            app:layout_constraintTop_toBottomOf="@id/artistName"/>
+            app:layout_constraintTop_toBottomOf="@id/artistName"
+            android:layout_marginTop="54dp"
+            android:paddingTop="16dp"/>
 
         <TextView
             android:id="@+id/currentTime"

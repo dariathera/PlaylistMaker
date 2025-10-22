@@ -37,4 +37,14 @@
         <item name="tint">@color/YP_Black</item>
         <item name="android:textColor">@color/YP_Black</item>
     </style>
+
+    <style name="RoundSideButton">
+        <item name="android:padding">14dp</item>
+        <item name="android:layout_width">51dp</item>
+        <item name="android:layout_height">51dp</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:background">@drawable/round_button</item>
+        <item name="android:backgroundTint">@color/YP_White_25</item>
+    </style>
+
 </resources>
