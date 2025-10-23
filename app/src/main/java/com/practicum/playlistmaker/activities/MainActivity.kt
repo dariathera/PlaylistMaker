@@ -20,24 +20,6 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
 
-        // Если в прошлый раз работа приложения завершилась на экране аудиоплеера, перенаправляем пользователся на экран аудиоплеера
-        val app = App.getInstance()
-        if (app != null) {
-            val sharedPrefs : SharedPreferences = app.getSharedPreferences(
-                app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE)
-            val lastScreen = sharedPrefs.getString(app.LAST_SCREEN_KEY, ScreenState.MAIN.displayName)  // "main" — дефолт
-            if (lastScreen == ScreenState.AUDIOPLAYER.displayName) {
-                val intent = Intent(this, AudioplayerActivity::class.java)
-                startActivity(intent)
-
-                // Не выходим из main activity, чтобы на экране аудиоплеера корректно работала кнопка назад
-                // finish()
-                // return
-            }
-        }
-
-        // Если пользователь остаётся на главном экране
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -65,17 +47,6 @@ class MainActivity : AppCompatActivity() {
             // Toast.makeText(this@MainActivity, "Нажали на \"Медиатека\"!", Toast.LENGTH_SHORT).show()
             val displayIntent = Intent(this, LibraryActivity::class.java)
             startActivity(displayIntent)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        val app = App.getInstance()
-        if (app != null) {
-            val sharedPrefs: SharedPreferences = app.getSharedPreferences(
-                app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE
-            )
-            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, ScreenState.MAIN.displayName).apply()
         }
     }
 }

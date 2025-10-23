@@ -66,15 +66,4 @@ class SettingsActivity : AppCompatActivity() {
             switcher.setChecked((applicationContext as App).darkTheme)
         }
     }
-
-    override fun onPause() {
-        super.onPause()
-        val app = App.getInstance()
-        if (app != null) {
-            val sharedPrefs: SharedPreferences = app.getSharedPreferences(
-                app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE
-            )
-            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, ScreenState.SETTINGS.displayName).apply()
-        }
-    }
 }

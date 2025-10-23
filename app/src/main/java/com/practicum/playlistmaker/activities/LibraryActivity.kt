@@ -23,14 +23,4 @@ class LibraryActivity : AppCompatActivity() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        val app = App.getInstance()
-        if (app != null) {
-            val sharedPrefs: SharedPreferences = app.getSharedPreferences(
-                app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE
-            )
-            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, ScreenState.LIBRARY.displayName).apply()
-        }
-    }
 }

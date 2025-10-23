@@ -220,15 +220,4 @@ class SearchActivity : AppCompatActivity() {
         private const val USER_INPUT = "USER_INPUT"
         private const val EMPTY_LINE = ""
     }
-
-    override fun onPause() {
-        super.onPause()
-        val app = App.getInstance()
-        if (app != null) {
-            val sharedPrefs: SharedPreferences = app.getSharedPreferences(
-                app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE
-            )
-            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, ScreenState.SEARCH.displayName).apply()
-        }
-    }
 }

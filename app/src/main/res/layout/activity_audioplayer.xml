@@ -41,11 +41,11 @@
             android:layout_height="0dp"
             android:layout_marginTop="30dp"
             app:layout_constraintDimensionRatio="1:1"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toStartOf="@id/rightBorder"
             app:layout_constraintStart_toEndOf="@id/leftBorder"
             app:layout_constraintTop_toBottomOf="@id/btnGoBack"
-            tools:srcCompat="@drawable/ic_artwork_placeholder_512" />
+            tools:srcCompat="@drawable/ic_artwork_placeholder_45" />
 
         <TextView
             android:id="@+id/trackName"
@@ -123,7 +123,7 @@
             android:maxLines="1"
             app:layout_constraintHorizontal_bias="0.5"
             android:paddingBottom="22dp"
-            tools:text="0:30"/>
+            android:text="0:00"/>
 
         <TextView
             app:layout_constraintStart_toStartOf="parent"

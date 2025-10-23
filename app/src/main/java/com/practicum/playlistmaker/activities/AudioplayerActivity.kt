@@ -74,12 +74,9 @@ class AudioplayerActivity : AppCompatActivity() {
             txtGenre.text = setText(track.genre)
             txtCountry.text = setText(track.country)
 
-            // Заменить, когда будет написана логика воспроизведения
-            txtCurrentTime.text = "0:00"
-
             Glide.with(imgArtwork)
                 .load(track.getHighArtworkUrl())
-                .placeholder(R.drawable.ic_artwork_placeholder_512)
+                .placeholder(R.drawable.ic_artwork_placeholder_45)
                 .centerCrop()
                 .transform(RoundedCorners(DrawingTools.dpToPx(roundRadiusDp, imgArtwork.context)))
                 .into(imgArtwork)
@@ -96,14 +93,4 @@ class AudioplayerActivity : AppCompatActivity() {
         return if (s == null) "" else s.toString()
     }
 
-    override fun onPause() {
-        super.onPause()
-        val app = App.getInstance()
-        if (app != null) {
-            val sharedPrefs: SharedPreferences = app.getSharedPreferences(
-                app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE
-            )
-            sharedPrefs.edit().putString(app.LAST_SCREEN_KEY, ScreenState.AUDIOPLAYER.displayName).apply()
-        }
-    }
 }
