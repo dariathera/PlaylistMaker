@@ -62,8 +62,8 @@ class AudioplayerActivity : AppCompatActivity() {
         imgArtwork = findViewById(R.id.artwork)
         txtCurrentTime = findViewById(R.id.currentTime)
 
-        // val track: Track? = intent.getParcelableExtra("track_key")
-        val track: Track? = SearchHistorySaver.getLastTrack()
+        // Использовать новую версию метода не позволяет minSdkVersion = 29
+        val track: Track? = intent.getParcelableExtra("track_key")
         track?.let {
 
             txtTrackName.text =  setText(track.trackName)

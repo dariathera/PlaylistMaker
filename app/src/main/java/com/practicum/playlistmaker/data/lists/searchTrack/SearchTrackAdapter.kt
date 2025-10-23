@@ -41,7 +41,7 @@ class SearchTrackAdapter (
 
             if (context != null) {
                 val displayIntent = Intent(context, AudioplayerActivity::class.java)
-                // displayIntent.putExtra("track_key", track)
+                displayIntent.putExtra("track_key", track)
                 context.startActivity(displayIntent)
             }
 

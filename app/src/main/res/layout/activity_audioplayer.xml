@@ -5,13 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:importantForAccessibility="no"
-    android:id="@+id/main">
+    android:importantForAccessibility="no">
 
+     <!-- Если поместить ndroid:id="@+id/main" в родительский контейнер,
+     то строка состояния и панель навигации будут отображаться обособленно,
+     то есть не применится enableEdgeToEdge(). -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:background="?attr/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/main">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/leftBorder"
@@ -186,14 +189,16 @@
             app:layout_constraintTop_toBottomOf="@id/genreConstText"
             android:text="@string/country"
             android:id="@+id/countryConstText"
-            style="@style/TrackInfoConstText"/>
+            style="@style/TrackInfoConstText"
+            android:paddingBottom="17dp"/>
 
         <TextView
             android:id="@+id/country"
             app:layout_constraintStart_toEndOf="@id/countryConstText"
             app:layout_constraintTop_toTopOf="@id/countryConstText"
             tools:text="0:000000000000000000000000000000000000000000000"
-            style="@style/TrackInfoText"/>
+            style="@style/TrackInfoText"
+            android:paddingBottom="17dp"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
