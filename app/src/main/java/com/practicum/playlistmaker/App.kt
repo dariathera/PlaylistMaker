@@ -9,6 +9,7 @@ class App : Application() {
     val USER_SETTINGS_PREFERENCES = "user_settings_file"
     val DARK_THEME_KEY = "key_for_dark_them"
     val SEARCH_HISTORY_KEY = "key_for_search_history"
+    val LAST_SCREEN_KEY = "key_last_screen"
     var darkTheme = false
         private set
 

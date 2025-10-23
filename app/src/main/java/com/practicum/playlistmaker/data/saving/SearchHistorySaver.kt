@@ -63,4 +63,10 @@ object SearchHistorySaver {
         writeIntoMemory(ArrayDeque<Track>())
     }
 
+    // Удалить, когда будет реализована передача данный через intent
+    fun getLastTrack(): Track? {
+        val trackList = getFromMemory()
+        return if (trackList.isEmpty()) null else trackList[0]
+    }
+
 }

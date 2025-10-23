@@ -5,6 +5,7 @@
     <dimen name="smallText">11sp</dimen>
     <dimen name="bannerText">19sp</dimen>
     <dimen name="buttonText">14sp</dimen>
+    <dimen name="trackInfoText">13sp</dimen>
     <dimen name="btnMarginVertical">8dp</dimen>
     <dimen name="btnСornerRadius">16dp</dimen>
     <dimen name="btnIconPadding">8dp</dimen>

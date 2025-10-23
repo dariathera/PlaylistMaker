@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.activities
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,9 +18,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.data.lists.searchTrack.SearchTrackAdapter
-import com.practicum.playlistmaker.data.mockdata.mockTrackList
 import com.practicum.playlistmaker.data.objects.Track
 import com.practicum.playlistmaker.data.saving.SearchHistorySaver
 import com.practicum.playlistmaker.net.BadResponse
@@ -198,7 +199,6 @@ class SearchActivity : AppCompatActivity() {
     private fun showHistory (isHistoryVisible : Boolean) {
         txtSearchHistory.visibility =  if (isHistoryVisible) View.VISIBLE else View.GONE
         btnClearSearchHistory.visibility =  if (isHistoryVisible) View.VISIBLE else View.GONE
-        // emptyBlock.visibility = if (isHistoryVisible) View.VISIBLE else View.GONE
         savedTracksAdapter.updateData(SearchHistorySaver.getFromMemory())
         recyclerView.adapter = if (isHistoryVisible) savedTracksAdapter else searchTrackAdapter
         recyclerView.visibility = View.VISIBLE
