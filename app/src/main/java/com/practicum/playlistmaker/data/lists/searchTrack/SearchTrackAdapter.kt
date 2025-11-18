@@ -16,7 +16,8 @@ import com.practicum.playlistmaker.data.saving.SearchHistorySaver
 import com.practicum.playlistmaker.net.ItunesTrackData
 
 class SearchTrackAdapter (
-    private val tracks: MutableList<Track>
+    private val tracks: MutableList<Track>,
+    private val listener: OnTrackListClickListener? = null
 ) : RecyclerView.Adapter<SearchTrackViewHolder> () {
 
     private var myContext : Context? = null
@@ -37,12 +38,16 @@ class SearchTrackAdapter (
             val track = tracks[position]
 
             SearchHistorySaver.save(track)
-            Log.d("Playlist Maker Debug", "Нажатие на трек")
 
-            if (context != null) {
-                val displayIntent = Intent(context, AudioplayerActivity::class.java)
-                displayIntent.putExtra("track_key", track)
-                context.startActivity(displayIntent)
+            if (context != null && listener != null) {
+               if (listener.clickDebounce()) {
+                   // Log.d("Playlist Maker Debug", "Нажатие на трек обработано")
+                   val displayIntent = Intent(context, AudioplayerActivity::class.java)
+                   displayIntent.putExtra("track_key", track)
+                   context.startActivity(displayIntent)
+               } else {
+                   // Log.d("Playlist Maker Debug", "Нажатие на трек заблокировано дебаунсером")
+               }
             }
 
         }

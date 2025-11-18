@@ -8,5 +8,6 @@ data class ItunesTrackData(val trackName : String,
                            val country: String?,
                            val primaryGenreName: String?,
                            val collectionName: String?,
-                           val releaseDate: String? // нужны первые 4 символа
+                           val releaseDate: String?, // нужны первые 4 символа
+                           val previewUrl: String
 )

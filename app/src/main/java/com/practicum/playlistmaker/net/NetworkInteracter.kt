@@ -48,7 +48,8 @@ class NetworkInteracter {
                                                 album = result.collectionName,
                                                 year = result.releaseDate?.substring(0, 4)?.toInt(),
                                                 genre = result.primaryGenreName,
-                                                country = result.country
+                                                country = result.country,
+                                                previewUrl = result.previewUrl
                                             )
                                         }.toMutableList()
                                     )
