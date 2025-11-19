@@ -3,8 +3,11 @@ package com.practicum.playlistmaker.activities
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -12,6 +15,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +24,7 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.data.lists.searchTrack.OnTrackListClickListener
 import com.practicum.playlistmaker.data.lists.searchTrack.SearchTrackAdapter
 import com.practicum.playlistmaker.data.objects.Track
 import com.practicum.playlistmaker.data.saving.SearchHistorySaver
@@ -28,7 +33,7 @@ import com.practicum.playlistmaker.net.EmptyResponse
 import com.practicum.playlistmaker.net.GoodResponse
 import com.practicum.playlistmaker.net.NetworkInteracter
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
 
     private lateinit var btnGoBack: Button
     private lateinit var inputEditText: EditText
@@ -46,6 +51,11 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var btnClearSearchHistory : Button
     private lateinit var savedTracksAdapter : SearchTrackAdapter
     private lateinit var searchBlock : LinearLayout
+    private lateinit var handler : Handler
+    private lateinit var searchRunnable : Runnable
+    private lateinit var progressBar : ProgressBar
+    private lateinit var searchRunnableWithProgress : Runnable
+    private var isClickAllowed = true
 
 
 
@@ -58,22 +68,36 @@ class SearchActivity : AppCompatActivity() {
         inputEditText = findViewById(R.id.editText)
         clearButton = findViewById(R.id.clearIcon)
         background = findViewById(R.id.background)
-        inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as
+                InputMethodManager
         nothingFoundLayout = findViewById(R.id.nothingFound)
         connectionProblemsLayout = findViewById(R.id.connectionProblems)
         updateButton = findViewById(R.id.btn_update)
         txtSearchHistory = findViewById(R.id.search_history)
         btnClearSearchHistory = findViewById(R.id.clear_search_history)
         recyclerView = findViewById(R.id.recyclerView)
-        searchTrackAdapter = SearchTrackAdapter(ArrayDeque<Track>())
-        savedTracksAdapter = SearchTrackAdapter(SearchHistorySaver.getFromMemory())
+        searchTrackAdapter = SearchTrackAdapter(ArrayDeque<Track>(), this)
+        savedTracksAdapter = SearchTrackAdapter(SearchHistorySaver.getFromMemory(), this)
         recyclerView.adapter = searchTrackAdapter
         searchBlock = findViewById(R.id.searchBlock)
+        handler = Handler(Looper.getMainLooper())
+        searchRunnable = Runnable { makeRequest() }
+        progressBar = findViewById(R.id.progressBar)
+        searchRunnableWithProgress = Runnable {
+            recyclerView.visibility = View.GONE
+            searchBlock.visibility = View.GONE
+            nothingFoundLayout.visibility = View.GONE
+            connectionProblemsLayout.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
+            searchRunnable.run()
+        }
 
         txtSearchHistory.visibility = View.GONE
         btnClearSearchHistory.visibility = View.GONE
+        progressBar.visibility = View.GONE
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.background)) { v, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.background)) {
+            v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
@@ -107,6 +131,7 @@ class SearchActivity : AppCompatActivity() {
                 }
                 userInput = s.toString()
                 showHistory(inputEditText.hasFocus() && s?.isEmpty() == true)
+                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -173,18 +198,21 @@ class SearchActivity : AppCompatActivity() {
                         searchBlock.visibility = View.VISIBLE
                         nothingFoundLayout.visibility = View.GONE
                         connectionProblemsLayout.visibility = View.GONE
+                        progressBar.visibility = View.GONE
                     }
                     is EmptyResponse -> {
                         recyclerView.visibility = View.GONE
                         searchBlock.visibility = View.GONE
                         nothingFoundLayout.visibility = View.VISIBLE
                         connectionProblemsLayout.visibility = View.GONE
+                        progressBar.visibility = View.GONE
                     }
                     is BadResponse -> {
                         recyclerView.visibility = View.GONE
                         searchBlock.visibility = View.GONE
                         nothingFoundLayout.visibility = View.GONE
                         connectionProblemsLayout.visibility = View.VISIBLE
+                        progressBar.visibility = View.GONE
                     }
                 }
             }
@@ -193,6 +221,7 @@ class SearchActivity : AppCompatActivity() {
             searchBlock.visibility = View.GONE
             nothingFoundLayout.visibility = View.GONE
             connectionProblemsLayout.visibility = View.GONE
+            progressBar.visibility = View.GONE
         }
     }
 
@@ -215,9 +244,51 @@ class SearchActivity : AppCompatActivity() {
     }
 
     //------------------------------------------------------------------------------------
+    // Отложенный запрос
+    // Создаем новый Runnable, который сначала устанавливает видимость progressBar, а затем выполняет searchRunnable
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnableWithProgress)
+        handler.postDelayed(searchRunnableWithProgress, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    //------------------------------------------------------------------------------------
+    // debounce нажатия на элемент списка
+    /*
+    override fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        Log.d("Playlist Maker Debug", "Начало: isClickAllowed = $isClickAllowed, current = $current, время = ${System.currentTimeMillis()}")
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({
+                isClickAllowed = true
+                Log.d("Playlist Maker Debug", "Сброс: isClickAllowed = true, время = ${System.currentTimeMillis()}")
+            }, CLICK_DEBOUNCE_DELAY)
+            Log.d("Playlist Maker Debug", "Первый клик разрешён, планируем сброс через $CLICK_DEBOUNCE_DELAY мс")
+        } else {
+            Log.d("Playlist Maker Debug", "Клик заблокирован: isClickAllowed = false")
+        }
+        Log.d("Playlist Maker Debug", "Возвращаем: $current")
+        return current
+    }
+    */
+    override fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({
+                isClickAllowed = true
+            }, CLICK_DEBOUNCE_DELAY)
+        } else {
+        }
+        return current
+    }
+
+    //------------------------------------------------------------------------------------
     // Константы
     companion object {
         private const val USER_INPUT = "USER_INPUT"
         private const val EMPTY_LINE = ""
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }

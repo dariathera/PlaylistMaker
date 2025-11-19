@@ -13,7 +13,8 @@ data class Track(
     val album: String?,
     val year: Int?,
     val genre: String?,
-    val country: String?
+    val country: String?,
+    val previewUrl: String
 ): Parcelable {
     fun getHighArtworkUrl() : String {
         return artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
