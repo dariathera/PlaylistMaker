@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -18,6 +19,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.data.objects.Track
 import com.practicum.playlistmaker.tools.DrawingTools
+import com.practicum.playlistmaker.tools.MediaplayerState
 import java.util.Locale
 
 class AudioplayerActivity : AppCompatActivity() {
@@ -35,7 +37,7 @@ class AudioplayerActivity : AppCompatActivity() {
     private val roundRadiusDp: Float = 8f
     private lateinit var playButton : ImageButton
     private lateinit var mediaPlayer : MediaPlayer
-    private var playerState = STATE_DEFAULT
+    private var playerState : MediaplayerState = MediaplayerState.DEFAULT
     private var trackExists = false
     private lateinit var handler : Handler
     private lateinit var timerRunnable : Runnable
@@ -136,12 +138,12 @@ class AudioplayerActivity : AppCompatActivity() {
             mediaPlayer.setDataSource(track.previewUrl)
             mediaPlayer.prepareAsync()
             mediaPlayer.setOnPreparedListener {
-                playerState = STATE_PREPARED
+                playerState = MediaplayerState.PREPARED
                 playButton.setImageResource(R.drawable.ic_play_512)
             }
             mediaPlayer.setOnCompletionListener {
                 playButton.setImageResource(R.drawable.ic_play_512)
-                playerState = STATE_PREPARED
+                playerState = MediaplayerState.PREPARED
                 txtCurrentTime.text = START_TIME_TEXT
             }
         }
@@ -150,7 +152,7 @@ class AudioplayerActivity : AppCompatActivity() {
     private fun startPlayer() {
         if (trackExists) {
             mediaPlayer.start()
-            playerState = STATE_PLAYING
+            playerState = MediaplayerState.PLAYING
             playButton.setImageResource(R.drawable.ic_pause_512)
         }
     }
@@ -158,20 +160,25 @@ class AudioplayerActivity : AppCompatActivity() {
     private fun pausePlayer() {
         if (trackExists) {
             mediaPlayer.pause()
-            playerState = STATE_PAUSED
+            playerState = MediaplayerState.PAUSED
             playButton.setImageResource(R.drawable.ic_play_512)
         }
     }
 
     private fun playbackControl() {
         when(playerState) {
-            STATE_PLAYING -> {
+            MediaplayerState.PLAYING -> {
                 pausePlayer()
                 stopTimer()
             }
-            STATE_PREPARED, STATE_PAUSED -> {
+            MediaplayerState.PREPARED, MediaplayerState.PAUSED -> {
                 startPlayer()
                 startTimer()
+            }
+            MediaplayerState.DEFAULT -> {
+                Log.e("Playlist Maker Debug", "Недопустимая ситуация: реализуется " +
+                        "ветка DEFAULT в функции playbackControl(). Это значит, что ранее по " +
+                        "какой-то причине функция preparePlayer() не была вызвана.")
             }
         }
     }
@@ -198,10 +205,6 @@ class AudioplayerActivity : AppCompatActivity() {
 
     // Константы
     companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
         private const val START_TIME_TEXT = "00:00"
         private const val TIMER_DELAY = 1000L
         private const val MAX_TRACK_TIME = 30000L
