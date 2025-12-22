@@ -4,37 +4,21 @@ import android.app.Application
 import android.content.res.Configuration
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
+import com.practicum.playlistmaker.creator.Creator
 
-class App : Application() {
+class
+App : Application() {
     val USER_SETTINGS_PREFERENCES = "user_settings_file"
     val DARK_THEME_KEY = "key_for_dark_them"
     val SEARCH_HISTORY_KEY = "key_for_search_history"
-    val LAST_SCREEN_KEY = "key_last_screen"
-    var darkTheme = false
-        private set
+    val settingsSaverRepository = Creator.getSettingsSaverRepository()
 
     override fun onCreate() {
         super.onCreate()
         setInstance(this)
         Log.d("Playlist Maker Debug", "App.onCreate() вызван, INSTANCE = $INSTANCE")
-        val systemIsDarkMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-        val sharedPrefs = getSharedPreferences(USER_SETTINGS_PREFERENCES, MODE_PRIVATE)
-        switchTheme(sharedPrefs.getBoolean(DARK_THEME_KEY, systemIsDarkMode))
-    }
-
-    fun switchTheme(darkThemeEnabled: Boolean) {
-        val sharedPrefs = getSharedPreferences(USER_SETTINGS_PREFERENCES, MODE_PRIVATE)
-        darkTheme = darkThemeEnabled
-        AppCompatDelegate.setDefaultNightMode(
-            if (darkThemeEnabled) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
-        )
-        sharedPrefs.edit()
-            .putBoolean(DARK_THEME_KEY, darkTheme)
-            .apply()
+        val darkTheme = settingsSaverRepository.getColorTheme()
+        settingsSaverRepository.switchColorTheme(darkTheme)
     }
 
     companion object {
