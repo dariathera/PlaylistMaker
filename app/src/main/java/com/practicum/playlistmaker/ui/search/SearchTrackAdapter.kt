@@ -7,10 +7,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.creator.Creator
+import com.practicum.playlistmaker.domain.api.GetHistoryInteractor
 import com.practicum.playlistmaker.domain.entities.Track
-import com.practicum.playlistmaker.domain.repository.SearchHistorySaverRepository
 import com.practicum.playlistmaker.ui.audioplayer.AudioplayerActivity
-import com.practicum.playlistmaker.ui.search.SearchTrackViewHolder
 
 class SearchTrackAdapter (
     private val tracks: MutableList<Track>,
@@ -18,7 +17,7 @@ class SearchTrackAdapter (
 ) : RecyclerView.Adapter<SearchTrackViewHolder> () {
 
     private var myContext : Context? = null
-    private lateinit var searchHistorySaver : SearchHistorySaverRepository
+    private lateinit var searchHistorySaver : GetHistoryInteractor
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchTrackViewHolder {
         myContext = parent.context
@@ -34,7 +33,7 @@ class SearchTrackAdapter (
         holder.itemView.setOnClickListener {
 
             val track = tracks[position]
-            searchHistorySaver = Creator.getSearchHistorySaverRepository()
+            searchHistorySaver = Creator.provideGetHistoryInteractor()
             searchHistorySaver.save(track)
 
             if (context != null && listener != null) {

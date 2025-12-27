@@ -15,7 +15,7 @@ import com.practicum.playlistmaker.creator.Creator
 
 class SettingsActivity : AppCompatActivity() {
 
-    val settingsSaverRepository = Creator.getSettingsSaverRepository()
+    val settingsSaver = Creator.provideGetSettingsInteractor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,10 +63,10 @@ class SettingsActivity : AppCompatActivity() {
 
         val themeSwitcher = findViewById<
                 SwitchMaterial>(R.id.themeSwitcher)
-        themeSwitcher.setChecked(settingsSaverRepository.getColorTheme())
+        themeSwitcher.setChecked(settingsSaver.getColorTheme())
         themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
-            settingsSaverRepository.switchColorTheme(checked)
-            switcher.setChecked(settingsSaverRepository.getColorTheme())
+            settingsSaver.switchColorTheme(checked)
+            switcher.setChecked(settingsSaver.getColorTheme())
         }
     }
 }

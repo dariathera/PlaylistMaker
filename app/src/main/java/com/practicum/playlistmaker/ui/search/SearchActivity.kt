@@ -21,13 +21,13 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.creator.Creator
+import com.practicum.playlistmaker.domain.api.GetHistoryInteractor
 import com.practicum.playlistmaker.domain.api.GetMusicInteractor
 import com.practicum.playlistmaker.domain.entities.BadResponse
 import com.practicum.playlistmaker.domain.entities.EmptyResponse
 import com.practicum.playlistmaker.domain.entities.GetMusicResponse
 import com.practicum.playlistmaker.domain.entities.GoodResponse
 import com.practicum.playlistmaker.domain.entities.Track
-import com.practicum.playlistmaker.domain.repository.SearchHistorySaverRepository
 import com.practicum.playlistmaker.domain.use_cases.MusicRequestUseCase
 
 class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
@@ -52,7 +52,7 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
     private lateinit var progressBar : ProgressBar
     private lateinit var searchRunnableWithProgress : Runnable
     private var isClickAllowed = true
-    private lateinit var searchHistorySaver : SearchHistorySaverRepository
+    private lateinit var searchHistorySaver : GetHistoryInteractor
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,7 +72,7 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
         btnClearSearchHistory = findViewById(R.id.clear_search_history)
         recyclerView = findViewById(R.id.recyclerView)
         searchTrackAdapter = SearchTrackAdapter(ArrayDeque<Track>(), this)
-        searchHistorySaver = Creator.getSearchHistorySaverRepository()
+        searchHistorySaver = Creator.provideGetHistoryInteractor()
         savedTracksAdapter = SearchTrackAdapter(searchHistorySaver.getFromMemory(), this)
         recyclerView.adapter = searchTrackAdapter
         searchBlock = findViewById(R.id.searchBlock)

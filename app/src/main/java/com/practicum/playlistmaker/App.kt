@@ -11,14 +11,14 @@ App : Application() {
     val USER_SETTINGS_PREFERENCES = "user_settings_file"
     val DARK_THEME_KEY = "key_for_dark_them"
     val SEARCH_HISTORY_KEY = "key_for_search_history"
-    val settingsSaverRepository = Creator.getSettingsSaverRepository()
+    val settingsSaver = Creator.provideGetSettingsInteractor()
 
     override fun onCreate() {
         super.onCreate()
         setInstance(this)
         Log.d("Playlist Maker Debug", "App.onCreate() вызван, INSTANCE = $INSTANCE")
-        val darkTheme = settingsSaverRepository.getColorTheme()
-        settingsSaverRepository.switchColorTheme(darkTheme)
+        val darkTheme = settingsSaver.getColorTheme()
+        settingsSaver.switchColorTheme(darkTheme)
     }
 
     companion object {
