@@ -1,9 +1,9 @@
-package com.practicum.playlistmaker.domain.impl
+package com.practicum.playlistmaker.domain.interactors
 
 import com.practicum.playlistmaker.domain.api.GetSettingsInteractor
-import com.practicum.playlistmaker.domain.repository.SettingsSaverRepository
+import com.practicum.playlistmaker.domain.repository.SettingsRepository
 
-class GetSettingsInteractorImpl(private val repository: SettingsSaverRepository) : GetSettingsInteractor {
+class GetSettingsInteractorImpl(private val repository: SettingsRepository) : GetSettingsInteractor {
     override fun getColorTheme() : Boolean {
         return repository.getColorTheme()
     }

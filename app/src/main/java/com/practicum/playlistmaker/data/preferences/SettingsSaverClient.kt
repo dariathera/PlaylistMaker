@@ -9,7 +9,6 @@ import com.practicum.playlistmaker.data.Saver
 
 class SettingsSaverClient : Saver<Boolean> {
     override fun getFromMemory(): Boolean? {
-        Log.d("Playlist Maker Debug", "Мы в методе getFromMemory SettingsSaverClient")
         val app = App.getInstance() ?: return null
         val sharedPrefs : SharedPreferences = app.getSharedPreferences(
             app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE)

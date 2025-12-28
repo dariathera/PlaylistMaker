@@ -9,7 +9,6 @@ import com.practicum.playlistmaker.data.Saver
 class StringSearchHistorySaverClient : Saver<String> {
 
     override fun getFromMemory(): String? {
-        Log.d("Playlist Maker Debug", "Мы в методе getFromMemory")
         val app = App.getInstance() ?: return null
         val sharedPrefs : SharedPreferences = app.getSharedPreferences(
             app.USER_SETTINGS_PREFERENCES, MODE_PRIVATE)

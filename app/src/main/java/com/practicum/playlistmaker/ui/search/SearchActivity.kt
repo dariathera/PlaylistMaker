@@ -22,13 +22,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.domain.api.GetHistoryInteractor
-import com.practicum.playlistmaker.domain.api.GetMusicInteractor
+import com.practicum.playlistmaker.domain.api.GetTracksInteractor
+import com.practicum.playlistmaker.domain.api.UserMakesTracksRequestUseCase
 import com.practicum.playlistmaker.domain.entities.BadResponse
 import com.practicum.playlistmaker.domain.entities.EmptyResponse
 import com.practicum.playlistmaker.domain.entities.GetMusicResponse
 import com.practicum.playlistmaker.domain.entities.GoodResponse
 import com.practicum.playlistmaker.domain.entities.Track
-import com.practicum.playlistmaker.domain.use_cases.MusicRequestUseCase
 
 class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
 
@@ -188,8 +188,8 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
     private fun makeRequest() {
         if (!inputEditText.text.isEmpty()) {
             val searchText = inputEditText.text.toString()
-            val musicRequestUseCase = MusicRequestUseCase()
-            val consumer = object : GetMusicInteractor.GetMusicConsumer {
+            val musicRequestUseCase : UserMakesTracksRequestUseCase = Creator.provideUserMakesTracksRequestUseCase()
+            val consumer = object : GetTracksInteractor.GetMusicConsumer {
                 override fun consume(response: GetMusicResponse) {
                     handler.post {
                         handleResponse(response)

@@ -1,10 +1,10 @@
-package com.practicum.playlistmaker.domain.impl
+package com.practicum.playlistmaker.domain.interactors
 
 import com.practicum.playlistmaker.domain.api.GetHistoryInteractor
 import com.practicum.playlistmaker.domain.entities.Track
-import com.practicum.playlistmaker.domain.repository.SearchHistorySaverRepository
+import com.practicum.playlistmaker.domain.repository.SearchHistoryRepository
 
-class GetHistoryInteractorImpl(private val repository: SearchHistorySaverRepository) : GetHistoryInteractor {
+class GetHistoryInteractorImpl(private val repository: SearchHistoryRepository) : GetHistoryInteractor {
     override fun getFromMemory(): ArrayDeque<Track> {
         return repository.getFromMemory()
     }

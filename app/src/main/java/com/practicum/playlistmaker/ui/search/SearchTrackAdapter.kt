@@ -38,12 +38,11 @@ class SearchTrackAdapter (
 
             if (context != null && listener != null) {
                if (listener.clickDebounce()) {
-                   // Log.d("Playlist Maker Debug", "Нажатие на трек обработано")
                    val displayIntent = Intent(context, AudioplayerActivity::class.java)
                    displayIntent.putExtra("track_key", track)
                    context.startActivity(displayIntent)
                } else {
-                   // Log.d("Playlist Maker Debug", "Нажатие на трек заблокировано дебаунсером")
+                   // Нажатие на трек заблокировано дебаунсером
                }
             }
 

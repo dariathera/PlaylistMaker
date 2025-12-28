@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.domain.repository
 
-interface SettingsSaverRepository {
+interface SettingsRepository {
     fun switchColorTheme(darkThemeEnabled: Boolean)
     fun getColorTheme() : Boolean
 }

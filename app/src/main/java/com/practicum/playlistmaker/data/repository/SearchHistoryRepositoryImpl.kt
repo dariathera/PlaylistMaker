@@ -1,22 +1,20 @@
 package com.practicum.playlistmaker.data.repository
 
-import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.data.Saver
 import com.practicum.playlistmaker.domain.entities.Track
-import com.practicum.playlistmaker.domain.repository.SearchHistorySaverRepository
+import com.practicum.playlistmaker.domain.repository.SearchHistoryRepository
 
-class SearchHistorySaverRepositoryImpl (
+class SearchHistoryRepositoryImpl (
     private val saverClient : Saver<String>
-    ) : SearchHistorySaverRepository
+    ) : SearchHistoryRepository
 {
     private val maxQuantity = 10
 
     override fun getFromMemory(): ArrayDeque<Track> {
         val json = saverClient.getFromMemory() ?: return ArrayDeque<Track>()
         val type = object : TypeToken<ArrayDeque<Track>>() {}.type
-        Log.d("Playlist Maker Debug", "Получены $json")
         return Gson().fromJson(json, type)
     }
 
@@ -46,7 +44,6 @@ class SearchHistorySaverRepositoryImpl (
 
         savedTracks.addFirst(track)
         writeIntoMemory(savedTracks)
-        Log.d("Playlist Maker Debug", "Мы в методе save. Сохранены $savedTracks")
     }
 
     override fun clearHistory() {

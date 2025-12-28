@@ -16,7 +16,6 @@ App : Application() {
     override fun onCreate() {
         super.onCreate()
         setInstance(this)
-        Log.d("Playlist Maker Debug", "App.onCreate() вызван, INSTANCE = $INSTANCE")
         val darkTheme = settingsSaver.getColorTheme()
         settingsSaver.switchColorTheme(darkTheme)
     }
@@ -28,5 +27,7 @@ App : Application() {
         fun setInstance(app: App) {
             INSTANCE = app
         }
+        const val DEBUG_LOG_TAG = "Playlist Maker Debug"
+        const val ERROR_LOG_TAG = "Playlist Maker Error"
     }
 }

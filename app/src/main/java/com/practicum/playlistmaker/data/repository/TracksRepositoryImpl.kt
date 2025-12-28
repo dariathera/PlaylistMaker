@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.data.repository
 
-import com.practicum.playlistmaker.data.dto.GetMusicRequest
+import com.practicum.playlistmaker.data.dto.GetTracksRequest
 import com.practicum.playlistmaker.data.dto.ItunesResponse
 import com.practicum.playlistmaker.data.dto.NetResponse
 import com.practicum.playlistmaker.data.network.ItunesNetworkClient
@@ -9,15 +9,15 @@ import com.practicum.playlistmaker.domain.entities.EmptyResponse
 import com.practicum.playlistmaker.domain.entities.GetMusicResponse
 import com.practicum.playlistmaker.domain.entities.GoodResponse
 import com.practicum.playlistmaker.domain.entities.Track
-import com.practicum.playlistmaker.domain.repository.GetMusicRepository
+import com.practicum.playlistmaker.domain.repository.TracksRepository
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class GetMusicRepositoryImpl(private val itunesNetworkClient: ItunesNetworkClient):
-    GetMusicRepository {
+class TracksRepositoryImpl(private val itunesNetworkClient: ItunesNetworkClient):
+    TracksRepository {
 
     override fun getMusic(expression: String) : GetMusicResponse{
-        val response : NetResponse = itunesNetworkClient.doRequest(GetMusicRequest(expression))
+        val response : NetResponse = itunesNetworkClient.doRequest(GetTracksRequest(expression))
         val itunesResponse = response as? ItunesResponse
 
         if (itunesResponse == null) {

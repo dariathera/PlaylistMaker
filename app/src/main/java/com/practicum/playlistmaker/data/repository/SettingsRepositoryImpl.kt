@@ -4,11 +4,11 @@ import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.data.Saver
-import com.practicum.playlistmaker.domain.repository.SettingsSaverRepository
+import com.practicum.playlistmaker.domain.repository.SettingsRepository
 
-class SettingsSaverRepositoryImpl(
+class SettingsRepositoryImpl(
     private val saverClient : Saver<Boolean>
-) : SettingsSaverRepository {
+) : SettingsRepository {
     private fun getSystemIsDarkMode() : Boolean {
         val app = App.getInstance() ?: return false
         val systemIsDarkMode = app.resources.configuration.uiMode and

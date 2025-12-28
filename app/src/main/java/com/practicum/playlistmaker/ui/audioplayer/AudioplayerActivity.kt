@@ -15,7 +15,9 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.domain.entities.Track
 import com.practicum.playlistmaker.presentation.DrawingTools
 import com.practicum.playlistmaker.presentation.MediaplayerState
@@ -71,7 +73,7 @@ class AudioplayerActivity : AppCompatActivity() {
         txtCurrentTime = findViewById(R.id.currentTime)
         playButton = findViewById(R.id.btnPlayPause)
         mediaPlayer = MediaPlayer()
-        timerManager = TimerManager(txtCurrentTime, mediaPlayer)
+        timerManager = Creator.provideTimerManager(txtCurrentTime, mediaPlayer)
         handler = Handler(Looper.getMainLooper())
 
         playButton.setImageResource(R.drawable.ic_play_512)
@@ -169,7 +171,7 @@ class AudioplayerActivity : AppCompatActivity() {
                 timerManager.startTimer()
             }
             MediaplayerState.DEFAULT -> {
-                Log.e("Playlist Maker Debug", "Недопустимая ситуация: реализуется " +
+                Log.e(App.ERROR_LOG_TAG, "Недопустимая ситуация: реализуется " +
                         "ветка DEFAULT в функции playbackControl(). Это значит, что ранее по " +
                         "какой-то причине функция preparePlayer() не была вызвана.")
             }
