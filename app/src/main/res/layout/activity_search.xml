@@ -47,7 +47,7 @@
                 android:layout_marginStart="12dp"/>
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/inputEditText"
                 style="@style/SearchEditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -71,7 +71,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/clearIcon"
+            android:id="@+id/clearButton"
             android:src="@drawable/ic_close_16"
             android:visibility="gone"
             android:layout_gravity="center|end"
@@ -103,7 +103,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/search_history"
+                android:id="@+id/txtSearchHistory"
                 android:text="@string/search_history"
                 style="@style/SectionTitle"
                 android:textSize="@dimen/bannerText"
@@ -123,18 +123,27 @@
                 android:visibility="gone"/>
 
             <Button
-                android:id="@+id/clear_search_history"
+                android:id="@+id/btnClearSearchHistory"
                 style="@style/Button"
                 android:text="@string/clear_search_history"
                 android:layout_gravity="center"
                 android:layout_marginTop="16dp"/>
+
+            <!-- При нажатии на него поле ввода теряет фокус, и клавиатура пропадает. -->
+            <LinearLayout
+                android:id="@+id/historyBlankLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:visibility="visible"/>
 
         </LinearLayout>
 
     </ScrollView>
 
     <LinearLayout
-        android:id="@+id/nothingFound"
+        android:id="@+id/nothingFoundLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -157,7 +166,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/connectionProblems"
+        android:id="@+id/connectionProblemsLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -178,10 +187,19 @@
             style="@style/TextBanner"/>
 
         <Button
-            android:id="@+id/btn_update"
+            android:id="@+id/updateButton"
             style="@style/Button"
             android:text="@string/update"/>
     </LinearLayout>
+
+    <!-- При нажатии на него поле ввода теряет фокус, и клавиатура пропадает. -->
+    <LinearLayout
+        android:id="@+id/blankLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical|center_horizontal"
+        android:visibility="gone"/>
 
 </LinearLayout>
 

@@ -1,0 +1,9 @@
+package com.practicum.playlistmaker.search_history.domain
+
+import com.practicum.playlistmaker.search.domain.entities.Track
+
+interface GetHistoryInteractor {
+    fun getFromMemory(): ArrayDeque<Track>
+    fun save(track : Track)
+    fun clearHistory()
+}
