@@ -16,8 +16,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.util.Creator
-import com.practicum.playlistmaker.search_history.domain.GetHistoryInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModel
 
@@ -26,7 +24,6 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var searchTrackAdapter : SearchTrackAdapter
     private lateinit var savedTracksAdapter : SearchTrackAdapter
-    private lateinit var searchHistorySaver : GetHistoryInteractor
     private lateinit var binding: ActivitySearchBinding
     private lateinit var viewModel: SearchViewModel
 
@@ -41,13 +38,11 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
             SearchViewModel.getFactory(this)
         ).get(SearchViewModel::class.java)
 
-        binding.inputEditText.setText(viewModel.userInput)
 
         inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as
                 InputMethodManager
         searchTrackAdapter = SearchTrackAdapter(ArrayDeque<Track>(), this)
-        searchHistorySaver = Creator.provideGetHistoryInteractor()
-        savedTracksAdapter = SearchTrackAdapter(searchHistorySaver.getFromMemory(), this)
+        savedTracksAdapter = SearchTrackAdapter(ArrayDeque<Track>(), this)
         binding.recyclerView.adapter = searchTrackAdapter
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.background)) {
@@ -276,26 +271,13 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
         }
     }
 
-    private fun showKeyboardWithDelay() {
-        binding.inputEditText.postDelayed({
-            if (binding.inputEditText.hasFocus() && binding.inputEditText.isAttachedToWindow) {
-                inputMethodManager.showSoftInput(binding.inputEditText, InputMethodManager.SHOW_IMPLICIT)
-            }
-        }, KEYBOARD_DELAY)
-    }
-
     private fun hideKeyboard() {
         val view = currentFocus ?: binding.inputEditText
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-
     override fun clickDebounce(): Boolean {
         return viewModel.clickDebounce()
-    }
-
-    companion object {
-        private const val KEYBOARD_DELAY = 50L
     }
 
 }
