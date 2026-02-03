@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.player.ui.activity
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -98,6 +99,10 @@ class AudioplayerActivity : AppCompatActivity() {
 
         binding.playButton.setOnClickListener {
             viewModel.playbackControl()
+        }
+
+        viewModel.observeShowMessage().observe(this) {
+            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
         }
     }
 

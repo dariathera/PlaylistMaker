@@ -8,7 +8,6 @@ import com.practicum.playlistmaker.player.ui.activity.AudioplayerActivity
 import com.practicum.playlistmaker.util.Creator
 import com.practicum.playlistmaker.search_history.domain.GetHistoryInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
-import com.practicum.playlistmaker.search.ui.activity.SearchTrackViewHolder
 
 class SearchTrackAdapter (
     private val tracks: MutableList<Track>,

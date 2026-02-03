@@ -6,13 +6,14 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import com.practicum.playlistmaker.App
-import com.practicum.playlistmaker.search.data.client.NetworkClient
 import com.practicum.playlistmaker.search.data.dto.GetTracksRequest
 import com.practicum.playlistmaker.search.data.dto.NetResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class ItunesNetworkClient(private val context: Context) : NetworkClient {
+class ItunesNetworkClient() : NetworkClient {
+
+    private val context = App.getContext()
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(ITUNES_BASE_URL)

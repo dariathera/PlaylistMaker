@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.search.domain
 
-import com.practicum.playlistmaker.search.domain.TracksRepository
 import java.util.concurrent.Executors
 
 class GetTracksInteractorImpl(private val repository: TracksRepository) : GetTracksInteractor {

@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.search.ui.viewmodel
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -16,11 +15,11 @@ import com.practicum.playlistmaker.search.domain.UserMakesTracksRequestUseCase
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.ui.activity.SearchState
 import com.practicum.playlistmaker.search_history.domain.GetHistoryInteractor
-import com.practicum.playlistmaker.util.Creator
 import com.practicum.playlistmaker.util.Resource
 
 class SearchViewModel(
-    private val context: Context
+    private val searchHistorySaver : GetHistoryInteractor,
+    private val musicRequestUseCase : UserMakesTracksRequestUseCase,
 ) : ViewModel() {
 
     private val stateLiveData = MutableLiveData<SearchState>(
@@ -30,8 +29,6 @@ class SearchViewModel(
     private val isClearButtonVisibleLiveData = MutableLiveData<Boolean>(false)
     fun observeIsClearButtonVisible(): LiveData<Boolean> = isClearButtonVisibleLiveData
 
-    private val searchHistorySaver : GetHistoryInteractor =
-        Creator.provideGetHistoryInteractor()
     private val history : ArrayDeque<Track> = searchHistorySaver.getFromMemory()
 
     var userInput : String = EMPTY_LINE
@@ -52,16 +49,8 @@ class SearchViewModel(
         history.clear()
         history.addAll(searchHistorySaver.getFromMemory())
         return if (history.isEmpty()) {
-            Log.d(
-                App.Companion.DEBUG_LOG_TAG,
-                "Установлено состояние SearchState.Blank"
-            )
             SearchState.Blank
         } else {
-            Log.d(
-                App.Companion.DEBUG_LOG_TAG,
-                "Установлено состояние SearchState.History(history)"
-            )
             SearchState.History(history)
         }
     }
@@ -91,15 +80,7 @@ class SearchViewModel(
     }
 
     fun notifyUserClicksInputField(inputtedText: String) {
-        Log.d(
-            App.Companion.DEBUG_LOG_TAG,
-            "Пользователь нажал на поле ввода"
-        )
         if (inputtedText.isEmpty()) {
-            Log.d(
-                App.Companion.DEBUG_LOG_TAG,
-                "Поле ввода пусто"
-            )
             stateLiveData.postValue(
                 createHistoryStateValue()
             )
@@ -120,7 +101,6 @@ class SearchViewModel(
 
     private fun makeRequest() {
         if (!userInput.isEmpty()) {
-            val musicRequestUseCase : UserMakesTracksRequestUseCase = Creator.provideUserMakesTracksRequestUseCase(context)
             val consumer = object : GetTracksInteractor.GetMusicConsumer {
                 override fun consume(response: Resource<MutableList<Track>>) {
                     handler.post {
@@ -192,10 +172,14 @@ class SearchViewModel(
 
     companion object {
         fun getFactory(
-            context: Context
+            searchHistorySaver : GetHistoryInteractor,
+            musicRequestUseCase : UserMakesTracksRequestUseCase
         ): ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                SearchViewModel(context)
+                SearchViewModel(
+                    searchHistorySaver,
+                    musicRequestUseCase
+                )
             }
         }
 
@@ -204,3 +188,5 @@ class SearchViewModel(
         const val EMPTY_LINE = ""
     }
 }
+
+

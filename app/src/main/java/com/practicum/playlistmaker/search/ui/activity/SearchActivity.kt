@@ -3,7 +3,6 @@ package com.practicum.playlistmaker.search.ui.activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -13,11 +12,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
-import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModel
+import com.practicum.playlistmaker.util.Creator
 
 class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
 
@@ -35,7 +34,10 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
 
         viewModel = ViewModelProvider(
             this,
-            SearchViewModel.getFactory(this)
+            SearchViewModel.getFactory(
+                Creator.provideGetHistoryInteractor(),
+                Creator.provideUserMakesTracksRequestUseCase()
+        )
         ).get(SearchViewModel::class.java)
 
 
@@ -82,10 +84,6 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                Log.d(
-                    App.Companion.DEBUG_LOG_TAG,
-                    "Сработал onTextChanged"
-                )
                 if (binding.inputEditText.hasFocus()) {
                     viewModel.handleInput(s)
                 }
@@ -99,31 +97,18 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
         binding.inputEditText.setOnFocusChangeListener { _, hasFocus ->
             viewModel.notifyUserIsEnteringText(hasFocus)
             if(!hasFocus) {
-                Log.d(
-                    App.Companion.DEBUG_LOG_TAG,
-                    "inputEditText потерял фокус"
-                )
                 hideKeyboard()
             } else {
-                Log.d(
-                    App.Companion.DEBUG_LOG_TAG,
-                    "inputEditText получил фокус"
-                )
+                // ...
             }
         }
 
         binding.inputEditText.setOnTouchListener { view, event ->
             if (event.action == MotionEvent.ACTION_DOWN) {
-                Log.d(
-                    App.Companion.DEBUG_LOG_TAG,
-                    "Activity: Пользователь нажал на поле ввода (TOUCH)"
-                )
-
                 // Показываем клавиатуру
                 view.requestFocus()
                 showKeyboardImmediately()
                 viewModel.notifyUserClicksInputField(binding.inputEditText.text.toString())
-
                 return@setOnTouchListener true
             }
             false

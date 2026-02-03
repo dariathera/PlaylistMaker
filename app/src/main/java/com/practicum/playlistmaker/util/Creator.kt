@@ -1,9 +1,7 @@
 package com.practicum.playlistmaker.util
 
-import android.app.Activity
 import android.content.Context
 import android.media.MediaPlayer
-import android.widget.TextView
 import com.practicum.playlistmaker.player.ui.timer.TimeTextObserving
 import com.practicum.playlistmaker.search.data.client.ItunesNetworkClient
 import com.practicum.playlistmaker.settings.data.SettingsSaverClient
@@ -30,16 +28,16 @@ import com.practicum.playlistmaker.sharing.domain.SharingInteractor
 import com.practicum.playlistmaker.sharing.domain.SharingInteractorImpl
 
 object Creator {
-    private fun getTracksRepository(context: Context): TracksRepository {
-        return TracksRepositoryImpl(ItunesNetworkClient(context))
+    private fun getTracksRepository(): TracksRepository {
+        return TracksRepositoryImpl(ItunesNetworkClient())
     }
 
-    fun provideGetTracksInteractor(context: Context): GetTracksInteractor {
-        return GetTracksInteractorImpl(getTracksRepository(context))
+    fun provideGetTracksInteractor(): GetTracksInteractor {
+        return GetTracksInteractorImpl(getTracksRepository())
     }
 
-    fun provideUserMakesTracksRequestUseCase(context: Context) : UserMakesTracksRequestUseCase {
-        return UserMakesTracksRequestUseCaseImpl(context)
+    fun provideUserMakesTracksRequestUseCase() : UserMakesTracksRequestUseCase {
+        return UserMakesTracksRequestUseCaseImpl()
     }
 
     //--------------------

@@ -15,9 +15,11 @@ import com.practicum.playlistmaker.player.ui.mediaplayer.MediaplayerState
 import com.practicum.playlistmaker.player.ui.timer.TimeTextObserving
 import com.practicum.playlistmaker.player.ui.timer.TimerManager
 import com.practicum.playlistmaker.util.Creator
+import com.practicum.playlistmaker.util.SingleLiveEvent
+import com.practicum.playlistmaker.R
 
 class AudioplayerViewModel(
-    private val trackUrl: String,
+    private val trackUrl: String?,
 ) : ViewModel(), TimeTextObserving {
 
     // Для возобновления воспроизведения после поворота
@@ -34,6 +36,9 @@ class AudioplayerViewModel(
 
     private val timeTextLiveData = MutableLiveData<String>(timerManager.START_TIME_TEXT)
     fun observeTimeText(): LiveData<String> = timeTextLiveData
+
+    private val showMessageLiveData = SingleLiveEvent<String>()
+    fun observeShowMessage(): LiveData<String> = showMessageLiveData
 
     init {
         preparePlayer()
@@ -107,8 +112,15 @@ class AudioplayerViewModel(
                 timerManager.stopTimer()
             }
             MediaplayerState.PREPARED, MediaplayerState.PAUSED -> {
-                startPlayer()
-                timerManager.startTimer()
+                if (trackUrl != null) {
+                    startPlayer()
+                    timerManager.startTimer()
+                } else {
+                    showMessageLiveData.postValue(
+                        App.getContext().getString(
+                            R.string.no_preview_link))
+                }
+
             }
             MediaplayerState.DEFAULT -> {
                 Log.e(
@@ -125,7 +137,7 @@ class AudioplayerViewModel(
 
     companion object {
         fun getFactory(
-            trackUrl: String
+            trackUrl: String?
         ): ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 AudioplayerViewModel(trackUrl)
