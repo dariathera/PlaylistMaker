@@ -34,7 +34,7 @@ val searchModule = module {
         TracksRepositoryImpl(get())
     }
 
-    single<GetTracksInteractor> {
+    factory<GetTracksInteractor> {
         GetTracksInteractorImpl(get())
     }
 

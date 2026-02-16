@@ -26,7 +26,7 @@ val settingsModule = module {
         )
     }
 
-    single<SettingsInteractor> {
+    factory<SettingsInteractor> {
         SettingsInteractorImpl(get())
     }
 }

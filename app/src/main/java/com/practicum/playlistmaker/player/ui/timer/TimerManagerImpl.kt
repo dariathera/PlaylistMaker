@@ -3,16 +3,18 @@ package com.practicum.playlistmaker.player.ui.timer
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
 import android.os.Handler
+import android.os.Looper
 import java.util.Locale
 
 class TimerManagerImpl(
-    private val mediaPlayer : MediaPlayer,
-    private var handler : Handler
+    private val mediaPlayer : MediaPlayer
 ) : TimerManager() {
     private val TIMER_DELAY = 1000L
     private val MAX_TRACK_TIME = 30000L
     override val START_TIME_TEXT = "00:00"
     private val listeners = mutableListOf<TimeTextObserving>()
+
+    private val handler = Handler(Looper.getMainLooper())
 
     override val timerRunnable = object : Runnable {
         override fun run() {

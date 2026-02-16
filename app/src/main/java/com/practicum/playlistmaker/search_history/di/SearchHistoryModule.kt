@@ -37,7 +37,7 @@ val searchHistoryModule = module {
             get())
     }
 
-    single<GetHistoryInteractor> {
+    factory<GetHistoryInteractor> {
         GetHistoryInteractorImpl(get())
     }
 

@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.player.ui.viewmodel
 
 import android.media.MediaPlayer
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -16,13 +17,13 @@ import com.practicum.playlistmaker.R
 class AudioplayerViewModel(
     private val trackUrl: String?,
     private val mediaPlayer : MediaPlayer,
-    private val handler : Handler,
     private val timerManager : TimerManager
 ) : ViewModel(), TimeTextObserving {
 
     // Для возобновления воспроизведения после поворота
     private var savedPlayerPosition: Int = 0
     private var savedIsPlaying: Boolean = false
+    private val handler = Handler(Looper.getMainLooper())
 
     private var playerState : MediaplayerState = MediaplayerState.DEFAULT
 

@@ -14,7 +14,7 @@ val sharingModule = module {
         ExternalNavigatorImpl(context)
     }
 
-    single<SharingInteractor> { (context: Context) ->
+    factory<SharingInteractor> { (context: Context) ->
         SharingInteractorImpl(
             context,
             get { parametersOf(context) }
