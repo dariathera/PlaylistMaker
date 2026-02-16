@@ -5,14 +5,14 @@ import android.content.Intent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.player.ui.activity.AudioplayerActivity
-import com.practicum.playlistmaker.util.Creator
 import com.practicum.playlistmaker.search_history.domain.GetHistoryInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
+import org.koin.core.component.KoinComponent
 
 class SearchTrackAdapter (
     private val tracks: MutableList<Track>,
     private val listener: OnTrackListClickListener? = null
-) : RecyclerView.Adapter<SearchTrackViewHolder> () {
+) : RecyclerView.Adapter<SearchTrackViewHolder> (), KoinComponent {
 
     private var myContext : Context? = null
     private lateinit var searchHistorySaver : GetHistoryInteractor
@@ -33,7 +33,7 @@ class SearchTrackAdapter (
                if (listener.
                    clickDebounce()) {
                    val track = tracks[position]
-                   searchHistorySaver = Creator.provideGetHistoryInteractor()
+                   searchHistorySaver = getKoin().get()
                    searchHistorySaver.save(track)
                    val displayIntent = Intent(context, AudioplayerActivity::class.java)
                    displayIntent.putExtra("track_key", track)

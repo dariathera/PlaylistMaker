@@ -1,11 +1,13 @@
 package com.practicum.playlistmaker.search.domain
 
-import com.practicum.playlistmaker.util.Creator
+import org.koin.core.component.KoinComponent
 
-class UserMakesTracksRequestUseCaseImpl() : UserMakesTracksRequestUseCase {
-    private val getMusicInteractor = Creator.provideGetTracksInteractor()
-
+class UserMakesTracksRequestUseCaseImpl(private val getMusicInteractor: GetTracksInteractor) :
+    UserMakesTracksRequestUseCase,
+    KoinComponent
+{
     override fun makeRequest(requestText: String, consumer : GetTracksInteractor.GetMusicConsumer) {
         getMusicInteractor.searchMusic( requestText.trim(), consumer)
     }
 }
+

@@ -7,19 +7,20 @@ import com.practicum.playlistmaker.util.Saver
 import com.practicum.playlistmaker.search_history.domain.SearchHistoryRepository
 
 class SearchHistoryRepositoryImpl (
-    private val saverClient : Saver<String>
-    ) : SearchHistoryRepository
+    private val saverClient : Saver<String>,
+    private val gson: Gson
+) : SearchHistoryRepository
 {
     private val maxQuantity = 10
 
     override fun getFromMemory(): ArrayDeque<Track> {
         val json = saverClient.getFromMemory() ?: return ArrayDeque<Track>()
         val type = object : TypeToken<ArrayDeque<Track>>() {}.type
-        return Gson().fromJson(json, type)
+        return gson.fromJson(json, type)
     }
 
     private fun writeIntoMemory(tracks: ArrayDeque<Track>) {
-        val json = Gson().toJson(tracks)
+        val json = gson.toJson(tracks)
         saverClient.writeIntoMemory(json)
     }
 

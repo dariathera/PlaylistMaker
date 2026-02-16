@@ -68,4 +68,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
     implementation("androidx.activity:activity-ktx:1.8.2")
 
+    // внедрение зависимостей
+    implementation("io.insert-koin:koin-android:3.3.0")
+
 }
