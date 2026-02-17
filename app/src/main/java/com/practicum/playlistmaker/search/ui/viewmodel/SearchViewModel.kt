@@ -6,9 +6,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.search.domain.GetTracksInteractor
 import com.practicum.playlistmaker.search.domain.UserMakesTracksRequestUseCase
@@ -171,18 +168,6 @@ class SearchViewModel(
     }
 
     companion object {
-        fun getFactory(
-            searchHistorySaver : GetHistoryInteractor,
-            musicRequestUseCase : UserMakesTracksRequestUseCase
-        ): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                SearchViewModel(
-                    searchHistorySaver,
-                    musicRequestUseCase
-                )
-            }
-        }
-
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         const val EMPTY_LINE = ""

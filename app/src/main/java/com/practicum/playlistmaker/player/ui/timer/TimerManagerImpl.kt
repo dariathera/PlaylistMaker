@@ -6,22 +6,27 @@ import android.os.Handler
 import android.os.Looper
 import java.util.Locale
 
-class TimerManagerImpl(private val mediaPlayer : MediaPlayer, private val listener : TimeTextObserving
+class TimerManagerImpl(
+    private val mediaPlayer : MediaPlayer
 ) : TimerManager() {
     private val TIMER_DELAY = 1000L
     private val MAX_TRACK_TIME = 30000L
     override val START_TIME_TEXT = "00:00"
-    private var handler : Handler = Handler(Looper.getMainLooper())
+    private val listeners = mutableListOf<TimeTextObserving>()
+
+    private val handler = Handler(Looper.getMainLooper())
 
     override val timerRunnable = object : Runnable {
         override fun run() {
             val currentTime = updateTimerText()
             if (currentTime < MAX_TRACK_TIME) {
                 handler.postDelayed(this, TIMER_DELAY)
-                listener.setNewTimeText(SimpleDateFormat(
-                    "mm:ss",
-                    Locale.getDefault()
-                ).format(currentTime))
+                for (listener in listeners) {
+                    listener.setNewTimeText(SimpleDateFormat(
+                        "mm:ss",
+                        Locale.getDefault()
+                    ).format(currentTime))
+                }
             }
         }
     }
@@ -45,6 +50,8 @@ class TimerManagerImpl(private val mediaPlayer : MediaPlayer, private val listen
         handler.removeCallbacks(timerRunnable)
     }
 
-
+    override fun addListener(listner: TimeTextObserving) {
+        listeners.add(listner)
+    }
 
 }

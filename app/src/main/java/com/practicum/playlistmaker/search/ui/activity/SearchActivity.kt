@@ -11,12 +11,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.ActivitySearchBinding
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModel
-import com.practicum.playlistmaker.util.Creator
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
 
@@ -24,22 +24,13 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
     private lateinit var searchTrackAdapter : SearchTrackAdapter
     private lateinit var savedTracksAdapter : SearchTrackAdapter
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        viewModel = ViewModelProvider(
-            this,
-            SearchViewModel.getFactory(
-                Creator.provideGetHistoryInteractor(),
-                Creator.provideUserMakesTracksRequestUseCase()
-        )
-        ).get(SearchViewModel::class.java)
-
 
         inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as
                 InputMethodManager

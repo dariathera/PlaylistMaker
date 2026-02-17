@@ -6,7 +6,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
@@ -14,6 +13,9 @@ import com.practicum.playlistmaker.databinding.ActivityAudioplayerBinding
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.util.DrawingTools
 import com.practicum.playlistmaker.player.ui.viewmodel.AudioplayerViewModel
+import org.koin.androidx.viewmodel.ext.android.getViewModel
+import org.koin.core.parameter.parametersOf
+import kotlin.getValue
 
 class AudioplayerActivity : AppCompatActivity() {
 
@@ -34,6 +36,10 @@ class AudioplayerActivity : AppCompatActivity() {
         if (track == null) {
             finish()
             return
+        }
+
+        viewModel = getViewModel<AudioplayerViewModel> {
+            parametersOf(track.previewUrl)
         }
 
         enableEdgeToEdge()
@@ -78,13 +84,6 @@ class AudioplayerActivity : AppCompatActivity() {
             .into(binding.artwork)
 
         // Управление воспроизведением
-
-        viewModel = ViewModelProvider(
-            this,
-            AudioplayerViewModel.getFactory(
-                track.previewUrl)
-        ).get(AudioplayerViewModel::class.java)
-
         viewModel.observeIsPlaying().observe(this) {
             if (it == true) {
                 binding.playButton.setImageResource(R.drawable.ic_pause_512)
@@ -118,14 +117,7 @@ class AudioplayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        // if (!isChangingConfigurations) {
-            // останавливаем воспроизведение
-            // viewModel.pausePlayer()
-            // viewModel.stopTimer()
-            // всё это уже было сделано во viewmodel.onCleared()
-        // }
     }
-
 
     private fun setText(s: String?) : String {
         return if (s == null) "" else s

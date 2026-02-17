@@ -2,21 +2,55 @@ package com.practicum.playlistmaker
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Configuration
 import android.util.Log
-import com.practicum.playlistmaker.util.Creator
+import com.practicum.playlistmaker.player.di.audioplayerModule
+import com.practicum.playlistmaker.player.di.audioplayerViewModelModule
+import com.practicum.playlistmaker.search.di.searchModule
+import com.practicum.playlistmaker.search.di.searchViewModelModule
+import com.practicum.playlistmaker.search_history.di.searchHistoryModule
+import com.practicum.playlistmaker.settings.di.settingsModule
+import com.practicum.playlistmaker.settings.di.settingsViewModelModule
+import com.practicum.playlistmaker.settings.domain.SettingsInteractor
+import com.practicum.playlistmaker.sharing.di.sharingModule
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.component.KoinComponent
+import org.koin.core.context.startKoin
 
 class
-App : Application() {
+App : Application(), KoinComponent {
     val USER_SETTINGS_PREFERENCES = "user_settings_file"
     val DARK_THEME_KEY = "key_for_dark_them"
     val SEARCH_HISTORY_KEY = "key_for_search_history"
-    val settingsSaver = Creator.provideSettingsInteractor()
+    private lateinit var settingsSaver: SettingsInteractor
 
     override fun onCreate() {
         super.onCreate()
+
+        startKoin {
+            androidContext(this@App)
+            modules(
+                searchModule,
+                searchHistoryModule,
+                searchViewModelModule,
+                audioplayerModule,
+                audioplayerViewModelModule,
+                settingsModule,
+                sharingModule,
+                settingsViewModelModule
+            )
+        }
+
         setInstance(this)
+
+        settingsSaver = getKoin().get()
         val darkTheme = settingsSaver.getColorTheme()
         settingsSaver.switchColorTheme(darkTheme)
+    }
+
+    fun getSystemDarkMode() : Boolean {
+        return resources.configuration.uiMode and
+            Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
     }
 
     companion object {
