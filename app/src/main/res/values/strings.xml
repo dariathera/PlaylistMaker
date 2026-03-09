@@ -28,4 +28,9 @@
     <string name="genre">Жанр</string>
     <string name="country">Страна</string>
     <string name="no_preview_link">Отсутствует ссылка на превью</string>
+    <string name="tab_name_favorites">Избранные треки</string>
+    <string name="tab_name_playlists">Плейлисты</string>
+    <string name="library_is_empty">Ваша медиатека пуста</string>
+    <string name="no_playlists">Вы не создали ни одного плейлиста</string>
+    <string name="new_playlist">Новый плейлист</string>
 </resources>

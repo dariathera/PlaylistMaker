@@ -26,4 +26,10 @@
     <string name="genre">Genre</string>
     <string name="country">Country</string>
     <string name="no_preview_link">There is no preview link</string>
+    <string name="tab_name_favorites">Favorites</string>
+    <string name="tab_name_playlists">Playlists</string>
+    <string name="library_is_empty">Your media library is empty</string>
+    <string name="no_playlists">You haven\'t created any playlists yet</string>
+    <string name="new_playlist">New playlist</string>
+
 </resources>

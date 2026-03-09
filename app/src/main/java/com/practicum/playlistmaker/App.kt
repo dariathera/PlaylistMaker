@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
+import com.practicum.playlistmaker.library.di.libraryViewModelModule
 import com.practicum.playlistmaker.player.di.audioplayerModule
 import com.practicum.playlistmaker.player.di.audioplayerViewModelModule
 import com.practicum.playlistmaker.search.di.searchModule
@@ -37,7 +38,8 @@ App : Application(), KoinComponent {
                 audioplayerViewModelModule,
                 settingsModule,
                 sharingModule,
-                settingsViewModelModule
+                settingsViewModelModule,
+                libraryViewModelModule
             )
         }
 
