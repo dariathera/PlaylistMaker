@@ -71,4 +71,7 @@ dependencies {
     // внедрение зависимостей
     implementation("io.insert-koin:koin-android:3.3.0")
 
+    // фрагменты
+    implementation("androidx.fragment:fragment-ktx:1.5.5")
+
 }
