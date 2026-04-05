@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/background"
     style="@style/VerticalLayout"
-    android:background="?attr/colorPrimary">
+    android:background="?attr/colorPrimary"
+    tools:context="com.practicum.playlistmaker.search.ui.activity.SearchFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +16,8 @@
 
         <Button
             android:id="@+id/btnGoBack"
-            style="@style/ButtonGoBack" />
+            style="@style/ButtonGoBack"
+            android:visibility="gone"/>
 
         <TextView
             android:text="@string/search"

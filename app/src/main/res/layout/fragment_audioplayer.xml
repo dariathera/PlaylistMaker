@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:importantForAccessibility="no">
+    android:importantForAccessibility="no"
+    android:id="@+id/background"
+    tools:context="com.practicum.playlistmaker.player.ui.activity.AudioplayerFragment">
 
      <!-- Если поместить ndroid:id="@+id/main" в родительский контейнер,
      то строка состояния и панель навигации будут отображаться обособленно,

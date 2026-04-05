@@ -1,38 +1,42 @@
 package com.practicum.playlistmaker.settings.ui.activity
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivitySettingsBinding
+import androidx.fragment.app.Fragment
+import com.practicum.playlistmaker.App
+import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 import com.practicum.playlistmaker.settings.ui.viewmodel.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.getValue
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
 
-    private lateinit var binding: ActivitySettingsBinding
+    private lateinit var binding: FragmentSettingsBinding
     private val viewModel: SettingsViewModel by viewModel {
-        parametersOf(this)
+        parametersOf(requireContext())
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivitySettingsBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Настраиваем отступы
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        binding.btnGoBack.setOnClickListener {
-            finish() //Удаляет SettingsActivity из стека.
-        }
 
         binding.shareTheApp.setOnClickListener {
             viewModel.shareApp()
@@ -46,7 +50,7 @@ class SettingsActivity : AppCompatActivity() {
             viewModel.openUserAgreement()
         }
 
-        viewModel.observeColorTheme().observe(this) {
+        viewModel.observeColorTheme().observe(viewLifecycleOwner) {
             binding.themeSwitcher.setChecked(it)
         }
 

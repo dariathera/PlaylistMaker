@@ -17,27 +17,15 @@
         android:theme="@style/Theme.PlaylistMaker"
         tools:targetApi="31">
         <activity
-            android:name=".library.ui.activity.LibraryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".search.ui.activity.SearchActivity"
-            android:exported="false" />
-        <activity
-            android:name=".settings.ui.activity.SettingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".player.ui.activity.AudioplayerActivity"
-            android:exported="false" />
-        <activity
-            android:name=".main.ui.activity.MainActivity"
+            android:name=".root.ui.activity.RootActivity"
             android:exported="true"
-            android:theme="@style/Theme.MainActivity">
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>
 
 </manifest>
+

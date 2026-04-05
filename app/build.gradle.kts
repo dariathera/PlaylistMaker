@@ -71,7 +71,9 @@ dependencies {
     // внедрение зависимостей
     implementation("io.insert-koin:koin-android:3.3.0")
 
-    // фрагменты
-    implementation("androidx.fragment:fragment-ktx:1.5.5")
+    // фрагменты и навигация
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.7")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.7")
+    implementation("androidx.fragment:fragment-ktx:1.6.2")
 
 }

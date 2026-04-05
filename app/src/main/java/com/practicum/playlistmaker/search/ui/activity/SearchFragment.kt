@@ -1,52 +1,73 @@
 package com.practicum.playlistmaker.search.ui.activity
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivitySearchBinding
-import com.practicum.playlistmaker.library.ui.activity.FavoritesState
+import androidx.navigation.fragment.findNavController
+import com.practicum.playlistmaker.databinding.FragmentSearchBinding
+import com.practicum.playlistmaker.player.ui.activity.AudioplayerFragment
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.getValue
 
-
-class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
-
+class SearchFragment : Fragment(), OnTrackListClickListener {
+    private lateinit var binding: FragmentSearchBinding
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var searchTrackAdapter : SearchTrackAdapter
     private lateinit var savedTracksAdapter : SearchTrackAdapter
-    private lateinit var binding: ActivitySearchBinding
     private val viewModel: SearchViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as
-                InputMethodManager
-        searchTrackAdapter = SearchTrackAdapter(ArrayDeque<Track>(), this)
-        savedTracksAdapter = SearchTrackAdapter(ArrayDeque<Track>(), this)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        /*
+        // Настраиваем отступы
+        ViewCompat.setOnApplyWindowInsetsListener(binding.background) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            insets
+        }
+
+         */
+
+        inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        searchTrackAdapter = SearchTrackAdapter(
+            ArrayDeque<Track>(),
+            this,
+            {track: Track -> onItemClick(track)}
+        )
+        savedTracksAdapter = SearchTrackAdapter(
+            ArrayDeque<Track>(),
+            this,
+            {track: Track -> onItemClick(track)}
+        )
         binding.recyclerView.adapter = searchTrackAdapter
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.background)) {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.background) {
                 v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        viewModel.observeIsClearButtonVisible().observe(this) {
+        viewModel.observeIsClearButtonVisible().observe(viewLifecycleOwner) {
             if (it == true) {
                 binding.clearButton.visibility = View.VISIBLE
             } else {
@@ -54,13 +75,8 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
             }
         }
 
-        viewModel.observeState().observe(this) {
+        viewModel.observeState().observe(viewLifecycleOwner) {
             render(it)
-        }
-
-        //------------------------------------------------------------------------------------
-        binding.btnGoBack.setOnClickListener {
-            finish()
         }
 
         //------------------------------------------------------------------------------------
@@ -140,8 +156,8 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
             binding.inputEditText.clearFocus()
             hideKeyboard()
         }
-
     }
+
 
     override fun onResume() {
         super.onResume()
@@ -249,12 +265,19 @@ class SearchActivity : AppCompatActivity(), OnTrackListClickListener {
     }
 
     private fun hideKeyboard() {
-        val view = currentFocus ?: binding.inputEditText
+        val view = requireActivity().currentFocus ?: binding.inputEditText
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     override fun clickDebounce(): Boolean {
         return viewModel.clickDebounce()
+    }
+
+    fun onItemClick(track: Track) {
+        findNavController().navigate(
+            R.id.action_searchFragment_to_audioplayerFragment,
+            AudioplayerFragment.createArgs(track)
+        )
     }
 
 }

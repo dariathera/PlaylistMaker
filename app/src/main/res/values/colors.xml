@@ -12,4 +12,5 @@
     <color name="YP_Background">#7F1A1B22</color>
     <color name="YP_Turquoise">#00D6C3</color>
     <color name="YP_Turquoise_Light">#76EAE0</color>
+    <color name="transparent">#00000000</color>
 </resources>

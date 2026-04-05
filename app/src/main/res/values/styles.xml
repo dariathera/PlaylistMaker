@@ -192,4 +192,11 @@
         <item name="android:textAllCaps">false</item>
     </style>
 
+    <style name="BottomNavText">
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">@dimen/navText</item>
+        <item name="android:importantForAccessibility">yes</item>
+    </style>
+
+    <dimen name="navText">12dp</dimen>
 </resources>

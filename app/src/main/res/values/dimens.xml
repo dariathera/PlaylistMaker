@@ -15,5 +15,6 @@
     <dimen name="plainTextSection_iconSize">24dp</dimen>
     <dimen name="plainTextSection_iconMarginEnd">12dp</dimen>
     <dimen name="bigIconSize">120dp</dimen>
+    <dimen name="bottomNavIconSize">24dp</dimen>
 
 </resources>

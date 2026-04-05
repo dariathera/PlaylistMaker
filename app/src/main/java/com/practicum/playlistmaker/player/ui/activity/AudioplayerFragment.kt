@@ -1,40 +1,59 @@
 package com.practicum.playlistmaker.player.ui.activity
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivityAudioplayerBinding
+import com.practicum.playlistmaker.databinding.FragmentAudioplayerBinding
+import com.practicum.playlistmaker.player.ui.viewmodel.AudioplayerViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.util.DrawingTools
-import com.practicum.playlistmaker.player.ui.viewmodel.AudioplayerViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.getValue
 
-class AudioplayerActivity : AppCompatActivity() {
+class AudioplayerFragment : Fragment() {
 
-    private lateinit var binding: ActivityAudioplayerBinding
-    private lateinit var viewModel: AudioplayerViewModel
+    companion object {
+        private const val ARGS_TRACK = "track_key"
 
-    private val currentTrack: Track? by lazy(LazyThreadSafetyMode.NONE) {
-        intent.getParcelableExtra("track_key")
+        fun createArgs(track: Track): Bundle =
+            bundleOf(ARGS_TRACK to track)
     }
-
+    private lateinit var binding: FragmentAudioplayerBinding
+    private lateinit var viewModel: AudioplayerViewModel
+    private val currentTrack: Track? by lazy(LazyThreadSafetyMode.NONE) {
+        requireArguments().getParcelable<Track?>(ARGS_TRACK)
+    }
     private val roundRadiusDp : Float = 8f
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        binding = FragmentAudioplayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Настраиваем отступы
+        ViewCompat.setOnApplyWindowInsetsListener(binding.background) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         val track = currentTrack
 
         if (track == null) {
-            finish()
+            findNavController().navigateUp()
             return
         }
 
@@ -42,19 +61,9 @@ class AudioplayerActivity : AppCompatActivity() {
             parametersOf(track.previewUrl)
         }
 
-        enableEdgeToEdge()
-        binding = ActivityAudioplayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
         // Кнопка назад
         binding.btnGoBack.setOnClickListener {
-            finish()
+            findNavController().navigateUp()
         }
 
         // Отображаем информацию о треке
@@ -84,7 +93,7 @@ class AudioplayerActivity : AppCompatActivity() {
             .into(binding.artwork)
 
         // Управление воспроизведением
-        viewModel.observeIsPlaying().observe(this) {
+        viewModel.observeIsPlaying().observe(viewLifecycleOwner) {
             if (it == true) {
                 binding.playButton.setImageResource(R.drawable.ic_pause_512)
             } else {
@@ -92,7 +101,7 @@ class AudioplayerActivity : AppCompatActivity() {
             }
         }
 
-        viewModel.observeTimeText().observe(this) {
+        viewModel.observeTimeText().observe(viewLifecycleOwner) {
             binding.currentTime.text = it
         }
 
@@ -100,23 +109,19 @@ class AudioplayerActivity : AppCompatActivity() {
             viewModel.playbackControl()
         }
 
-        viewModel.observeShowMessage().observe(this) {
-            Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+        viewModel.observeShowMessage().observe(viewLifecycleOwner) {
+            Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
         }
     }
 
     override fun onPause() {
         super.onPause()
-        if (isChangingConfigurations) {
+        if (requireActivity().isChangingConfigurations) {
             // не останавливаем воспроизведение при повороте
             return
         }
         viewModel.pausePlayer()
         viewModel.stopTimer()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     private fun setText(s: String?) : String {
@@ -126,4 +131,5 @@ class AudioplayerActivity : AppCompatActivity() {
     private fun setText(s: Int?) : String {
         return if (s == null) "" else s.toString()
     }
+
 }
