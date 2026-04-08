@@ -15,13 +15,17 @@ class SettingsViewModel(
 
     private val colorThemeLiveData = MutableLiveData<Boolean>(
         settingsInteractor.getColorTheme())
-    fun observeColorTheme(): LiveData<Boolean> = colorThemeLiveData
+    fun observeColorTheme(): LiveData<Boolean> {
+        Log.d("ColorTheme", "observeColorTheme вернул ${colorThemeLiveData.value.toString()}")
+        return colorThemeLiveData
+    }
 
     fun switchColorTheme(colorTheme: Boolean) {
 
         Log.d("ColorTheme", "Передано значение ${colorTheme.toString()}")
         settingsInteractor.switchColorTheme(colorTheme)
         colorThemeLiveData.postValue(
+            // colorTheme
             settingsInteractor.getColorTheme()
         )
         Log.d("ColorTheme", "Установлено значение ${settingsInteractor.getColorTheme()}")

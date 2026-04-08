@@ -33,10 +33,9 @@ class SettingsFragment : Fragment() {
         // Настраиваем отступы
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
-
 
         binding.shareTheApp.setOnClickListener {
             viewModel.shareApp()
@@ -51,10 +50,12 @@ class SettingsFragment : Fragment() {
         }
 
         viewModel.observeColorTheme().observe(viewLifecycleOwner) {
+            Log.d("ColorTheme", "В обзёрвер пришло значение ${it.toString()}")
             binding.themeSwitcher.setChecked(it)
         }
 
         binding.themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            Log.d("ColorTheme", "Зарегистрировано нажатие на свитчер ${checked.toString()}")
             viewModel.switchColorTheme(checked)
         }
     }

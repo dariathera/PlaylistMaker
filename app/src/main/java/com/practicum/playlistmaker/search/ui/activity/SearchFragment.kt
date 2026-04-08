@@ -37,15 +37,13 @@ class SearchFragment : Fragment(), OnTrackListClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        /*
         // Настраиваем отступы
+
         ViewCompat.setOnApplyWindowInsetsListener(binding.background) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
-
-         */
 
         inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         searchTrackAdapter = SearchTrackAdapter(
@@ -59,13 +57,6 @@ class SearchFragment : Fragment(), OnTrackListClickListener {
             {track: Track -> onItemClick(track)}
         )
         binding.recyclerView.adapter = searchTrackAdapter
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.background) {
-                v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         viewModel.observeIsClearButtonVisible().observe(viewLifecycleOwner) {
             if (it == true) {
