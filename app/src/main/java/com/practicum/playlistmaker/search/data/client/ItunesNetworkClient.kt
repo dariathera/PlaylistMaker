@@ -7,35 +7,33 @@ import android.util.Log
 import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.search.data.dto.GetTracksRequest
 import com.practicum.playlistmaker.search.data.dto.NetResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class ItunesNetworkClient(
     private val context: Context,
     private val itunesService: ItunesApi
 ) : NetworkClient {
 
-    override fun doRequest(dto: Any): NetResponse {
+    override suspend fun doRequest(dto: Any): NetResponse {
         if (isConnected() == false) {
             return NetResponse.NetConnectionError
         }
         if (dto is GetTracksRequest) {
-            return try {
-                val resp = itunesService.search(dto.expression).execute()
-
-                if (resp.isSuccessful) {
-                    val itunesResponse = resp.body()
+            return withContext(Dispatchers.IO) {
+                try {
+                    val itunesResponse = itunesService.search(dto.expression)
                     if (itunesResponse != null && itunesResponse.results.isNotEmpty()) {
-                        NetResponse.GoodNetResponse(resp.code(), ArrayList(itunesResponse.results))
+                        NetResponse.GoodNetResponse(200, ArrayList(itunesResponse.results))
                     } else {
-                        NetResponse.BlankResponse(resp.code())
+                        NetResponse.BlankResponse(200)
                     }
-                } else {
-                    Log.e(App.Companion.ERROR_LOG_TAG, "HTTP ошибка: ${resp.code()} - ${resp.message()}")
-                    NetResponse.ServerError(resp.code())
+                } catch (e: Throwable) {
+                    Log.e(App.Companion.ERROR_LOG_TAG, "Ошибка при выполнении HTTP запроса")
+                    NetResponse.ServerError(500)
                 }
-            } catch (e: Exception) {
-                Log.e(App.Companion.ERROR_LOG_TAG, "Неизвестная ошибка при выполнении запроса в ItunesNetworkClient: ${e.localizedMessage}")
-                NetResponse.UnknownError
             }
+
         } else {
             Log.e(App.Companion.ERROR_LOG_TAG, "В itunesNetworkClient.doRequest передан некорректный тип данных.")
             return NetResponse.UnknownError

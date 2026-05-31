@@ -1,6 +1,8 @@
 package com.practicum.playlistmaker.settings.ui.activity
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +10,6 @@ import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.databinding.FragmentSettingsBinding
 import com.practicum.playlistmaker.settings.ui.viewmodel.SettingsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -49,14 +50,19 @@ class SettingsFragment : Fragment() {
             viewModel.openUserAgreement()
         }
 
+        /*
         viewModel.observeColorTheme().observe(viewLifecycleOwner) {
             Log.d("ColorTheme", "В обзёрвер пришло значение ${it.toString()}")
             binding.themeSwitcher.setChecked(it)
+            // requireActivity().recreate()
         }
+        
+         */
 
         binding.themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             Log.d("ColorTheme", "Зарегистрировано нажатие на свитчер ${checked.toString()}")
             viewModel.switchColorTheme(checked)
         }
     }
+
 }

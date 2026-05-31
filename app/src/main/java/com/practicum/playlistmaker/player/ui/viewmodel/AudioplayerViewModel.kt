@@ -1,8 +1,6 @@
 package com.practicum.playlistmaker.player.ui.viewmodel
 
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -23,14 +21,13 @@ class AudioplayerViewModel(
     // Для возобновления воспроизведения после поворота
     private var savedPlayerPosition: Int = 0
     private var savedIsPlaying: Boolean = false
-    private val handler = Handler(Looper.getMainLooper())
 
     private var playerState : MediaplayerState = MediaplayerState.DEFAULT
 
     private val isPlayingLiveData = MutableLiveData<Boolean>(false)
     fun observeIsPlaying(): LiveData<Boolean> = isPlayingLiveData
 
-    private val timeTextLiveData = MutableLiveData<String>(timerManager.START_TIME_TEXT)
+    private val timeTextLiveData = MutableLiveData<String>(START_TIME_TEXT)
     fun observeTimeText(): LiveData<String> = timeTextLiveData
 
     private val showMessageLiveData = SingleLiveEvent<String>()
@@ -49,13 +46,12 @@ class AudioplayerViewModel(
         }
 
         mediaPlayer.release()
-        timerManager.clearHandler()
-        handler.removeCallbacksAndMessages(null)
+        timerManager.clearTasks()
         super.onCleared()
     }
 
     fun stopTimer() {
-        handler.removeCallbacks(timerManager.timerRunnable)
+        timerManager.clearTasks()
     }
 
     // Управление воспроизведением
@@ -66,7 +62,7 @@ class AudioplayerViewModel(
             if (savedPlayerPosition > 0) {
                 mediaPlayer.seekTo(savedPlayerPosition)
             } else {
-                timeTextLiveData.postValue(timerManager.START_TIME_TEXT)
+                timeTextLiveData.postValue(START_TIME_TEXT)
             }
             playerState = if (savedIsPlaying) {
                 mediaPlayer.start()
@@ -80,8 +76,8 @@ class AudioplayerViewModel(
         mediaPlayer.setOnCompletionListener {
             playerState = MediaplayerState.PREPARED
             isPlayingLiveData.postValue(false)
-            timeTextLiveData.postValue(timerManager.START_TIME_TEXT)
-            timerManager.clearHandler()
+            timeTextLiveData.postValue(START_TIME_TEXT)
+            timerManager.clearTasks()
             // Сбрасываем сохраненное состояние при завершении трека
             savedPlayerPosition = 0
             savedIsPlaying = false
@@ -131,4 +127,9 @@ class AudioplayerViewModel(
     override fun setNewTimeText(timeText: String) {
         timeTextLiveData.postValue(timeText)
     }
+
+    companion object {
+        private const val START_TIME_TEXT = "00:00"
+    }
+
 }

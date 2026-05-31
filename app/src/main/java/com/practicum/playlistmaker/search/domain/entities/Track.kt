@@ -9,7 +9,7 @@ data class Track(
     val artistName: String, // Имя исполнителя
     val trackTime: String, // Продолжительность трека, в макете duration
     val artworkUrl100: String, // Ссылка на изображение обложки
-    val trackId: Int,
+    val trackId: Long,
     val album: String?,
     val year: Int?,
     val genre: String?,

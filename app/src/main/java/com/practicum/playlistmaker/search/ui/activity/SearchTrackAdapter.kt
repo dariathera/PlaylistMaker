@@ -9,7 +9,6 @@ import org.koin.core.component.KoinComponent
 
 class SearchTrackAdapter (
     private val tracks: MutableList<Track>,
-    private val listener: OnTrackListClickListener? = null,
     private val onItemClick: (track: Track) -> Unit
 ) : RecyclerView.Adapter<SearchTrackViewHolder> (), KoinComponent {
 
@@ -28,18 +27,12 @@ class SearchTrackAdapter (
 
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
-            if (context != null && listener != null) {
-               if (listener.
-                   clickDebounce()) {
-                   val track = tracks[position]
-                   searchHistorySaver = getKoin().get()
-                   searchHistorySaver.save(track)
-                   onItemClick(track)
-               } else {
-                   // Нажатие на трек заблокировано дебаунсером
-               }
+            if (context != null) {
+                val track = tracks[position]
+                searchHistorySaver = getKoin().get()
+                searchHistorySaver.save(track)
+                onItemClick(track)
             }
-
         }
     }
 

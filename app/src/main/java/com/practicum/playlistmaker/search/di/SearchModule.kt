@@ -8,8 +8,6 @@ import com.practicum.playlistmaker.search.data.client.NetworkClient
 import com.practicum.playlistmaker.search.domain.GetTracksInteractor
 import com.practicum.playlistmaker.search.domain.GetTracksInteractorImpl
 import com.practicum.playlistmaker.search.domain.TracksRepository
-import com.practicum.playlistmaker.search.domain.UserMakesTracksRequestUseCase
-import com.practicum.playlistmaker.search.domain.UserMakesTracksRequestUseCaseImpl
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -36,9 +34,5 @@ val searchModule = module {
 
     factory<GetTracksInteractor> {
         GetTracksInteractorImpl(get())
-    }
-
-    single<UserMakesTracksRequestUseCase> {
-        UserMakesTracksRequestUseCaseImpl(get())
     }
 }

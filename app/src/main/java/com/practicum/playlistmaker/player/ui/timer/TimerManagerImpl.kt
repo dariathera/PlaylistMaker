@@ -2,42 +2,43 @@ package com.practicum.playlistmaker.player.ui.timer
 
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
-import android.os.Handler
-import android.os.Looper
+import android.util.Log
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class TimerManagerImpl(
     private val mediaPlayer : MediaPlayer
 ) : TimerManager() {
-    private val TIMER_DELAY = 1000L
-    private val MAX_TRACK_TIME = 30000L
-    override val START_TIME_TEXT = "00:00"
+    private val TIMER_DELAY = 300L
     private val listeners = mutableListOf<TimeTextObserving>()
+    private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var timerJob: Job? = null
 
-    private val handler = Handler(Looper.getMainLooper())
+    override fun startTimer() {
+        timerJob = managerScope.launch {
+            while (mediaPlayer.isPlaying) {
+                val currentTime = updateTimerText()
+                Log.d("TimerManager", "currentTime: ${currentTime}")
 
-    override val timerRunnable = object : Runnable {
-        override fun run() {
-            val currentTime = updateTimerText()
-            if (currentTime < MAX_TRACK_TIME) {
-                handler.postDelayed(this, TIMER_DELAY)
                 for (listener in listeners) {
                     listener.setNewTimeText(SimpleDateFormat(
                         "mm:ss",
                         Locale.getDefault()
                     ).format(currentTime))
                 }
+                delay(TIMER_DELAY)
             }
         }
     }
 
-    override fun startTimer() {
-        handler.postDelayed(timerRunnable, TIMER_DELAY)
-    }
-
     override fun stopTimer() {
-        handler.removeCallbacks(timerRunnable)
-        updateTimerText()
+        timerJob?.cancel()
     }
 
     // Перед вызовом нужно убедиться, что трек, для которого вызывается метод, существует
@@ -46,8 +47,8 @@ class TimerManagerImpl(
         return currentTime
     }
 
-    override fun clearHandler() {
-        handler.removeCallbacks(timerRunnable)
+    override fun clearTasks() {
+        managerScope.coroutineContext.cancelChildren()
     }
 
     override fun addListener(listner: TimeTextObserving) {

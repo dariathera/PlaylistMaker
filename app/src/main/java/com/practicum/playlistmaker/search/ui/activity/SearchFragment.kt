@@ -13,21 +13,29 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.practicum.playlistmaker.R
 import androidx.navigation.fragment.findNavController
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.activity.AudioplayerFragment
+import com.practicum.playlistmaker.root.ui.activity.RootActivity
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModel
+import debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 
-class SearchFragment : Fragment(), OnTrackListClickListener {
+class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding
     private lateinit var inputMethodManager: InputMethodManager
-    private lateinit var searchTrackAdapter : SearchTrackAdapter
-    private lateinit var savedTracksAdapter : SearchTrackAdapter
+    private var searchTrackAdapter : SearchTrackAdapter? = null
+    private var savedTracksAdapter : SearchTrackAdapter? = null
     private val viewModel: SearchViewModel by viewModel()
+    private lateinit var onTrackClickDebounce: (Track) -> Unit
+
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
@@ -38,7 +46,6 @@ class SearchFragment : Fragment(), OnTrackListClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         // Настраиваем отступы
-
         ViewCompat.setOnApplyWindowInsetsListener(binding.background) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
@@ -46,16 +53,24 @@ class SearchFragment : Fragment(), OnTrackListClickListener {
         }
 
         inputMethodManager = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
         searchTrackAdapter = SearchTrackAdapter(
             ArrayDeque<Track>(),
-            this,
-            {track: Track -> onItemClick(track)}
+            // this,
+            {track: Track ->
+                (activity as RootActivity).animateBottomNavigationView()
+                onTrackClickDebounce(track)
+            }
         )
         savedTracksAdapter = SearchTrackAdapter(
             ArrayDeque<Track>(),
-            this,
-            {track: Track -> onItemClick(track)}
+            // this,
+            {track: Track ->
+                (activity as RootActivity).animateBottomNavigationView()
+                onTrackClickDebounce(track)
+            }
         )
+
         binding.recyclerView.adapter = searchTrackAdapter
 
         viewModel.observeIsClearButtonVisible().observe(viewLifecycleOwner) {
@@ -97,8 +112,6 @@ class SearchFragment : Fragment(), OnTrackListClickListener {
             viewModel.notifyUserIsEnteringText(hasFocus)
             if(!hasFocus) {
                 hideKeyboard()
-            } else {
-                // ...
             }
         }
 
@@ -107,7 +120,9 @@ class SearchFragment : Fragment(), OnTrackListClickListener {
                 // Показываем клавиатуру
                 view.requestFocus()
                 showKeyboardImmediately()
-                viewModel.notifyUserClicksInputField(binding.inputEditText.text.toString())
+                viewModel.notifyUserClicksInputField(
+                    binding.inputEditText.text.toString()
+                )
                 return@setOnTouchListener true
             }
             false
@@ -147,6 +162,18 @@ class SearchFragment : Fragment(), OnTrackListClickListener {
             binding.inputEditText.clearFocus()
             hideKeyboard()
         }
+
+        onTrackClickDebounce = debounce<Track>(
+            CLICK_DEBOUNCE_DELAY,
+            viewLifecycleOwner.lifecycleScope,
+            false
+        ) { track ->
+            findNavController().navigate(
+                R.id.action_searchFragment_to_audioplayerFragment,
+                AudioplayerFragment.createArgs(track)
+            )
+        }
+
     }
 
 
@@ -214,7 +241,7 @@ class SearchFragment : Fragment(), OnTrackListClickListener {
                 }
             }
             is SearchState.History -> {
-                savedTracksAdapter.updateData(state.tracks)
+                savedTracksAdapter?.updateData(state.tracks)
                 binding.apply {
                     recyclerView.visibility = View.VISIBLE
                     searchBlock.visibility = View.VISIBLE
@@ -228,7 +255,7 @@ class SearchFragment : Fragment(), OnTrackListClickListener {
                 }
             }
             is SearchState.FoundTracks -> {
-                searchTrackAdapter.updateData(state.tracks)
+                searchTrackAdapter?.updateData(state.tracks)
                 binding.apply {
                     recyclerView.visibility = View.VISIBLE
                     searchBlock.visibility = View.VISIBLE
@@ -260,15 +287,11 @@ class SearchFragment : Fragment(), OnTrackListClickListener {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    override fun clickDebounce(): Boolean {
-        return viewModel.clickDebounce()
-    }
-
-    fun onItemClick(track: Track) {
-        findNavController().navigate(
-            R.id.action_searchFragment_to_audioplayerFragment,
-            AudioplayerFragment.createArgs(track)
-        )
+    override fun onDestroyView() {
+        super.onDestroyView()
+        searchTrackAdapter = null
+        savedTracksAdapter = null
+        binding.recyclerView.adapter = null
     }
 
 }
