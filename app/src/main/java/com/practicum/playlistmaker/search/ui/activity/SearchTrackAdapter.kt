@@ -1,17 +1,16 @@
 package com.practicum.playlistmaker.search.ui.activity
 
 import android.content.Context
-import android.content.Intent
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.player.ui.activity.AudioplayerActivity
 import com.practicum.playlistmaker.search_history.domain.GetHistoryInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
 import org.koin.core.component.KoinComponent
 
 class SearchTrackAdapter (
     private val tracks: MutableList<Track>,
-    private val listener: OnTrackListClickListener? = null
+    private val listener: OnTrackListClickListener? = null,
+    private val onItemClick: (track: Track) -> Unit
 ) : RecyclerView.Adapter<SearchTrackViewHolder> (), KoinComponent {
 
     private var myContext : Context? = null
@@ -35,9 +34,7 @@ class SearchTrackAdapter (
                    val track = tracks[position]
                    searchHistorySaver = getKoin().get()
                    searchHistorySaver.save(track)
-                   val displayIntent = Intent(context, AudioplayerActivity::class.java)
-                   displayIntent.putExtra("track_key", track)
-                   context.startActivity(displayIntent)
+                   onItemClick(track)
                } else {
                    // Нажатие на трек заблокировано дебаунсером
                }
