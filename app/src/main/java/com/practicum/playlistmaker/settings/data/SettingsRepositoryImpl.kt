@@ -13,6 +13,7 @@ class SettingsRepositoryImpl(
 
     override fun switchColorTheme(darkTheme: Boolean) {
         val darkThemeEnabled = darkTheme
+        saverClient.writeIntoMemory(darkTheme)
         AppCompatDelegate.setDefaultNightMode(
             if (darkThemeEnabled) {
                 AppCompatDelegate.MODE_NIGHT_YES
@@ -20,7 +21,6 @@ class SettingsRepositoryImpl(
                 AppCompatDelegate.MODE_NIGHT_NO
             }
         )
-        saverClient.writeIntoMemory(darkTheme)
     }
 
     override fun getColorTheme() : Boolean {

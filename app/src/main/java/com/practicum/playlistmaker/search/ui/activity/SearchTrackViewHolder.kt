@@ -9,6 +9,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.SearchTrackListItemBinding
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.util.DrawingTools
+import com.practicum.playlistmaker.util.FormatTools
 
 class SearchTrackViewHolder(private val binding: SearchTrackListItemBinding) :
     RecyclerView.ViewHolder(binding.root) {
@@ -17,7 +18,7 @@ class SearchTrackViewHolder(private val binding: SearchTrackListItemBinding) :
     fun bind(model: Track) {
         binding.apply {
             trackName.text = model.trackName
-            trackTime.text = model.trackTime
+            trackTime.text = FormatTools.millisToMmss(model.trackTime)
             artistName.text = model.artistName
         }
         Glide.with(itemView)

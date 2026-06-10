@@ -6,44 +6,60 @@ import com.practicum.playlistmaker.search.data.dto.NetResponse
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.domain.TracksRepository
 import com.practicum.playlistmaker.util.Resource
-import java.text.SimpleDateFormat
-import java.util.Locale
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TracksRepositoryImpl(private val networkClient: NetworkClient):
     TracksRepository {
 
-    override fun getMusic(expression: String) : Resource<MutableList<Track>> {
+    override fun getMusic(expression: String) : Flow<Resource<MutableList<Track>>> = flow {
+
         val response : NetResponse = networkClient.doRequest(GetTracksRequest(expression))
 
         when(response) {
             is NetResponse.BlankResponse ->
-                return Resource.Success<MutableList<Track>>(mutableListOf<Track>())
+                emit(
+                    Resource.Success<MutableList<Track>>(
+                        mutableListOf<Track>()
+                    )
+                )
             is NetResponse.GoodNetResponse ->
-                return  Resource.Success<MutableList<Track>>(
-                    response.results.map { result ->
-                        Track(
-                            trackName = result.trackName,
-                            artistName = result.artistName,
-                            trackTime = SimpleDateFormat(
-                                "mm:ss",
-                                Locale.getDefault()
-                            ).format(result.trackTimeMillis),
-                            artworkUrl100 = result.artworkUrl100,
-                            trackId = result.trackId,
-                            album = result.collectionName,
-                            year = result.releaseDate?.substring(0, 4)?.toInt(),
-                            genre = result.primaryGenreName,
-                            country = result.country,
-                            previewUrl = result.previewUrl
-                        )
-                    }.toMutableList()
+                emit(
+                    Resource.Success<MutableList<Track>>(
+                        response.results.map { result ->
+                            Track(
+                                trackName = result.trackName,
+                                artistName = result.artistName,
+                                trackTime = result.trackTimeMillis,
+                                artworkUrl100 = result.artworkUrl100,
+                                trackId = result.trackId,
+                                album = result.collectionName,
+                                year = result.releaseDate?.substring(0, 4)?.toInt(),
+                                genre = result.primaryGenreName,
+                                country = result.country,
+                                previewUrl = result.previewUrl
+                            )
+                        }.toMutableList()
+                    )
                 )
             is NetResponse.ServerError ->
-                return Resource.Error<MutableList<Track>>("Ошибка сервера, код ${response.resultCode}")
+                emit(
+                    Resource.Error<MutableList<Track>>(
+                        "Ошибка сервера, код ${response.resultCode}"
+                    )
+                )
             NetResponse.NetConnectionError ->
-                return Resource.Error<MutableList<Track>>("Нет интернет-соединения на устройстве")
+                emit(
+                    Resource.Error<MutableList<Track>>(
+                        "Нет интернет-соединения на устройстве"
+                    )
+                )
             NetResponse.UnknownError ->
-                return Resource.Error<MutableList<Track>>("Неизвестная ошибка на стороне клиента")
+                emit(
+                    Resource.Error<MutableList<Track>>(
+                        "Неизвестная ошибка на стороне клиента"
+                    )
+                )
         }
     }
 }

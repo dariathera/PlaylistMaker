@@ -1,22 +1,23 @@
 package com.practicum.playlistmaker.search.ui.viewmodel
 
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.search.domain.GetTracksInteractor
-import com.practicum.playlistmaker.search.domain.UserMakesTracksRequestUseCase
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.ui.activity.SearchState
 import com.practicum.playlistmaker.search_history.domain.GetHistoryInteractor
 import com.practicum.playlistmaker.util.Resource
+import debounce
+import kotlinx.coroutines.cancelChildren
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchHistorySaver : GetHistoryInteractor,
-    private val musicRequestUseCase : UserMakesTracksRequestUseCase,
+    private val getTracksInteractor : GetTracksInteractor
 ) : ViewModel() {
 
     private val stateLiveData = MutableLiveData<SearchState>(
@@ -31,16 +32,27 @@ class SearchViewModel(
     var userInput : String = EMPTY_LINE
     private var isUserEnteringText : Boolean = false
 
-    private var handler : Handler = Handler(Looper.getMainLooper())
-    private val searchRunnable : Runnable = Runnable { makeRequest() }
-    private val searchRunnableWithProgress : Runnable = Runnable {
+    private val trackSearchDebounce = debounce<Unit>(
+        SEARCH_DEBOUNCE_DELAY,
+        viewModelScope,
+        true
+    ) { _ ->
         stateLiveData.postValue(
             SearchState.Loading
         )
-        searchRunnable.run()
+        makeRequest()
     }
 
-    private var isClickAllowed = true
+    private val trackSearchWithoutDebounce = debounce<Unit>(
+        0,
+        viewModelScope,
+        true
+    ) { _ ->
+        stateLiveData.postValue(
+            SearchState.Loading
+        )
+        makeRequest()
+    }
 
     private fun createHistoryStateValue() : SearchState {
         history.clear()
@@ -53,7 +65,11 @@ class SearchViewModel(
     }
 
     fun clearTheInputField() {
-        handler.removeCallbacks(searchRunnableWithProgress)
+
+        // Так можно писать только потому, что кроме отложенного запроса
+        // у нас нет других отложенных задач.
+        viewModelScope.coroutineContext.cancelChildren()
+
         userInput = EMPTY_LINE
         stateLiveData.postValue(
             createHistoryStateValue()
@@ -73,7 +89,7 @@ class SearchViewModel(
                 createHistoryStateValue()
             )
         }
-        searchDebounce()
+        trackSearchDebounce(Unit)
     }
 
     fun notifyUserClicksInputField(inputtedText: String) {
@@ -84,28 +100,21 @@ class SearchViewModel(
         }
     }
 
-    // Отложенный запрос
-    // Создаем новый Runnable, который сначала устанавливает видимость progressBar, а затем выполняет searchRunnable
-    private fun searchDebounce() {
-        handler.removeCallbacks(searchRunnableWithProgress)
-        handler.postDelayed(searchRunnableWithProgress, SEARCH_DEBOUNCE_DELAY)
-    }
-
     fun makeRequestNow() {
-        handler.removeCallbacks(searchRunnableWithProgress)
-        searchRunnableWithProgress.run()
+        viewModelScope.coroutineContext.cancelChildren()
+        trackSearchWithoutDebounce(Unit)
     }
 
     private fun makeRequest() {
         if (!userInput.isEmpty()) {
-            val consumer = object : GetTracksInteractor.GetMusicConsumer {
-                override fun consume(response: Resource<MutableList<Track>>) {
-                    handler.post {
+
+            viewModelScope.launch {
+                getTracksInteractor
+                    .searchMusic(userInput)
+                    .collect { response ->
                         handleResponse(response)
                     }
-                }
             }
-            musicRequestUseCase.makeRequest(userInput, consumer)
         } else {
             stateLiveData.postValue(
                 createHistoryStateValue()
@@ -150,26 +159,8 @@ class SearchViewModel(
         )
     }
 
-    fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({
-                isClickAllowed = true
-            }, CLICK_DEBOUNCE_DELAY)
-        } else {
-        }
-        return current
-    }
-
-    override fun onCleared() {
-        handler.removeCallbacksAndMessages(null)
-        super.onCleared()
-    }
-
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
         const val EMPTY_LINE = ""
     }
 }
