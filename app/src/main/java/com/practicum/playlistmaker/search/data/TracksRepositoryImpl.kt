@@ -8,8 +8,6 @@ import com.practicum.playlistmaker.search.domain.TracksRepository
 import com.practicum.playlistmaker.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class TracksRepositoryImpl(private val networkClient: NetworkClient):
     TracksRepository {
@@ -32,10 +30,7 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient):
                             Track(
                                 trackName = result.trackName,
                                 artistName = result.artistName,
-                                trackTime = SimpleDateFormat(
-                                    "mm:ss",
-                                    Locale.getDefault()
-                                ).format(result.trackTimeMillis),
+                                trackTime = result.trackTimeMillis,
                                 artworkUrl100 = result.artworkUrl100,
                                 trackId = result.trackId,
                                 album = result.collectionName,

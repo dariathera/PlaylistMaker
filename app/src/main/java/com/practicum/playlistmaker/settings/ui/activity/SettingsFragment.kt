@@ -50,19 +50,9 @@ class SettingsFragment : Fragment() {
             viewModel.openUserAgreement()
         }
 
-        /*
-        viewModel.observeColorTheme().observe(viewLifecycleOwner) {
-            Log.d("ColorTheme", "В обзёрвер пришло значение ${it.toString()}")
-            binding.themeSwitcher.setChecked(it)
-            // requireActivity().recreate()
-        }
-        
-         */
-
         binding.themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
             Log.d("ColorTheme", "Зарегистрировано нажатие на свитчер ${checked.toString()}")
             viewModel.switchColorTheme(checked)
         }
     }
-
 }

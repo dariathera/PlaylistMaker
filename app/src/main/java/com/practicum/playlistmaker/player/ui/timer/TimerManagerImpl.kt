@@ -15,12 +15,16 @@ import java.util.Locale
 class TimerManagerImpl(
     private val mediaPlayer : MediaPlayer
 ) : TimerManager() {
-    private val TIMER_DELAY = 300L
     private val listeners = mutableListOf<TimeTextObserving>()
     private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var timerJob: Job? = null
 
+    companion object {
+        const val TIMER_DELAY = 300L
+    }
+
     override fun startTimer() {
+        timerJob?.cancel()
         timerJob = managerScope.launch {
             while (mediaPlayer.isPlaying) {
                 val currentTime = updateTimerText()

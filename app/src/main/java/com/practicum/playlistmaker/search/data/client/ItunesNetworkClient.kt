@@ -20,20 +20,17 @@ class ItunesNetworkClient(
             return NetResponse.NetConnectionError
         }
         if (dto is GetTracksRequest) {
-            return withContext(Dispatchers.IO) {
-                try {
-                    val itunesResponse = itunesService.search(dto.expression)
-                    if (itunesResponse != null && itunesResponse.results.isNotEmpty()) {
-                        NetResponse.GoodNetResponse(200, ArrayList(itunesResponse.results))
-                    } else {
-                        NetResponse.BlankResponse(200)
-                    }
-                } catch (e: Throwable) {
-                    Log.e(App.Companion.ERROR_LOG_TAG, "Ошибка при выполнении HTTP запроса")
-                    NetResponse.ServerError(500)
+            return try {
+                val itunesResponse = itunesService.search(dto.expression)
+                if (itunesResponse != null && itunesResponse.results.isNotEmpty()) {
+                    NetResponse.GoodNetResponse(200, ArrayList(itunesResponse.results))
+                } else {
+                    NetResponse.BlankResponse(200)
                 }
+            } catch (e: Throwable) {
+                Log.e(App.Companion.ERROR_LOG_TAG, "Ошибка при выполнении HTTP запроса")
+                NetResponse.ServerError(500)
             }
-
         } else {
             Log.e(App.Companion.ERROR_LOG_TAG, "В itunesNetworkClient.doRequest передан некорректный тип данных.")
             return NetResponse.UnknownError

@@ -17,6 +17,7 @@ import com.practicum.playlistmaker.databinding.FragmentAudioplayerBinding
 import com.practicum.playlistmaker.player.ui.viewmodel.AudioplayerViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.util.DrawingTools
+import com.practicum.playlistmaker.util.FormatTools
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -71,7 +72,7 @@ class AudioplayerFragment : Fragment() {
         binding.apply {
             trackName.text =  setText(track.trackName)
             artistName.text = setText(track.artistName)
-            duration.text = setText(track.trackTime)
+            duration.text = setText(FormatTools.millisToMmss(track.trackTime))
             album.text = setText(track.album)
             year.text = setText(track.year)
             genre.text = setText(track.genre)
