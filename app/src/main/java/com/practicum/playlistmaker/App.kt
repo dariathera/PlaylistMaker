@@ -4,6 +4,11 @@ import android.app.Application
 import android.content.Context
 import android.content.res.Configuration
 import android.util.Log
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.practicum.playlistmaker.db.data.AppDatabase
+import com.practicum.playlistmaker.db.di.databaseModule
+import com.practicum.playlistmaker.library.di.libraryModule
 import com.practicum.playlistmaker.library.di.libraryViewModelModule
 import com.practicum.playlistmaker.player.di.audioplayerModule
 import com.practicum.playlistmaker.player.di.audioplayerViewModelModule
@@ -24,6 +29,7 @@ App : Application(), KoinComponent {
     val DARK_THEME_KEY = "key_for_dark_them"
     val SEARCH_HISTORY_KEY = "key_for_search_history"
     private lateinit var settingsSaver: SettingsInteractor
+    lateinit var database: RoomDatabase
 
     override fun onCreate() {
         super.onCreate()
@@ -39,7 +45,9 @@ App : Application(), KoinComponent {
                 settingsModule,
                 sharingModule,
                 settingsViewModelModule,
-                libraryViewModelModule
+                libraryViewModelModule,
+                databaseModule,
+                libraryModule
             )
         }
 
@@ -48,6 +56,9 @@ App : Application(), KoinComponent {
         settingsSaver = getKoin().get()
         val darkTheme = settingsSaver.getColorTheme()
         settingsSaver.switchColorTheme(darkTheme)
+
+        // this — объект контекста приложения
+        database = Room.databaseBuilder(this, AppDatabase::class.java, "database.db").build()
     }
 
     fun getSystemDarkMode() : Boolean {

@@ -12,6 +12,7 @@ import com.practicum.playlistmaker.search.ui.activity.SearchState
 import com.practicum.playlistmaker.search_history.domain.GetHistoryInteractor
 import com.practicum.playlistmaker.util.Resource
 import debounce
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.launch
 
@@ -26,11 +27,19 @@ class SearchViewModel(
 
     private val isClearButtonVisibleLiveData = MutableLiveData<Boolean>(false)
     fun observeIsClearButtonVisible(): LiveData<Boolean> = isClearButtonVisibleLiveData
-
-    private val history : ArrayDeque<Track> = searchHistorySaver.getFromMemory()
-
+    private val history : ArrayDeque<Track> = ArrayDeque()
     var userInput : String = EMPTY_LINE
     private var isUserEnteringText : Boolean = false
+
+    init {
+        loadHistory()
+    }
+
+    private fun loadHistory() {
+        viewModelScope.launch(Dispatchers.IO) {
+            history.addAll(searchHistorySaver.getFromMemory())
+        }
+    }
 
     private val trackSearchDebounce = debounce<Unit>(
         SEARCH_DEBOUNCE_DELAY,
@@ -54,13 +63,15 @@ class SearchViewModel(
         makeRequest()
     }
 
-    private fun createHistoryStateValue() : SearchState {
-        history.clear()
-        history.addAll(searchHistorySaver.getFromMemory())
-        return if (history.isEmpty()) {
-            SearchState.Blank
-        } else {
-            SearchState.History(history)
+    private fun createHistoryStateValue() {
+        viewModelScope.launch(Dispatchers.IO) {
+            history.clear()
+            history.addAll(searchHistorySaver.getFromMemory())
+            if (history.isEmpty()) {
+                stateLiveData.postValue(SearchState.Blank)
+            } else {
+                stateLiveData.postValue(SearchState.History(history))
+            }
         }
     }
 
@@ -71,9 +82,7 @@ class SearchViewModel(
         viewModelScope.coroutineContext.cancelChildren()
 
         userInput = EMPTY_LINE
-        stateLiveData.postValue(
-            createHistoryStateValue()
-        )
+        createHistoryStateValue()
         isClearButtonVisibleLiveData.postValue(false)
     }
 
@@ -85,18 +94,14 @@ class SearchViewModel(
         }
         userInput = s.toString()
         if (isUserEnteringText && s?.isEmpty() == true) {
-            stateLiveData.postValue(
-                createHistoryStateValue()
-            )
+            createHistoryStateValue()
         }
         trackSearchDebounce(Unit)
     }
 
     fun notifyUserClicksInputField(inputtedText: String) {
         if (inputtedText.isEmpty()) {
-            stateLiveData.postValue(
-                createHistoryStateValue()
-            )
+            createHistoryStateValue()
         }
     }
 
@@ -116,9 +121,7 @@ class SearchViewModel(
                     }
             }
         } else {
-            stateLiveData.postValue(
-                createHistoryStateValue()
-            )
+            createHistoryStateValue()
         }
     }
 

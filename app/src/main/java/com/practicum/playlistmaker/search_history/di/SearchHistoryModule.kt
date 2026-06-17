@@ -34,6 +34,7 @@ val searchHistoryModule = module {
     single<SearchHistoryRepository> {
         SearchHistoryRepositoryImpl(
             get(named("historySaver")),
+            get(),
             get())
     }
 

@@ -28,8 +28,6 @@ class TimerManagerImpl(
         timerJob = managerScope.launch {
             while (mediaPlayer.isPlaying) {
                 val currentTime = updateTimerText()
-                Log.d("TimerManager", "currentTime: ${currentTime}")
-
                 for (listener in listeners) {
                     listener.setNewTimeText(SimpleDateFormat(
                         "mm:ss",

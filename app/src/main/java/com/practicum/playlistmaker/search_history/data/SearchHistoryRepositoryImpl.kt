@@ -2,21 +2,28 @@ package com.practicum.playlistmaker.search_history.data
 
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.practicum.playlistmaker.db.data.AppDatabase
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.util.Saver
 import com.practicum.playlistmaker.search_history.domain.SearchHistoryRepository
 
 class SearchHistoryRepositoryImpl (
     private val saverClient : Saver<String>,
-    private val gson: Gson
+    private val gson: Gson,
+    private val appDatabase: AppDatabase
 ) : SearchHistoryRepository
 {
     private val maxQuantity = 10
 
-    override fun getFromMemory(): ArrayDeque<Track> {
+    override suspend fun getFromMemory(): ArrayDeque<Track> {
         val json = saverClient.getFromMemory() ?: return ArrayDeque<Track>()
         val type = object : TypeToken<ArrayDeque<Track>>() {}.type
-        return gson.fromJson(json, type)
+        val array: ArrayDeque<Track> = gson.fromJson(json, type)
+        val favoriteIdList = appDatabase.getTrackDao().getTrackIds()
+        for (track in array) {
+            track.isFavorite = track.trackId in favoriteIdList
+        }
+        return array
     }
 
     private fun writeIntoMemory(tracks: ArrayDeque<Track>) {
@@ -24,7 +31,7 @@ class SearchHistoryRepositoryImpl (
         saverClient.writeIntoMemory(json)
     }
 
-    override fun save(track : Track) {
+    override suspend fun save(track : Track) {
         val savedTracks: ArrayDeque<Track> = getFromMemory()
         var indexToRemove: Int? = null
 

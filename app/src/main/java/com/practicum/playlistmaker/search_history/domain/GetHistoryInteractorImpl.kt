@@ -4,11 +4,11 @@ import com.practicum.playlistmaker.search.domain.entities.Track
 
 class GetHistoryInteractorImpl(private val repository: SearchHistoryRepository) :
     GetHistoryInteractor {
-    override fun getFromMemory(): ArrayDeque<Track> {
+    override suspend fun getFromMemory(): ArrayDeque<Track> {
         return repository.getFromMemory()
     }
 
-    override fun save(track : Track) {
+    override suspend fun save(track : Track) {
         repository.save(track)
     }
 

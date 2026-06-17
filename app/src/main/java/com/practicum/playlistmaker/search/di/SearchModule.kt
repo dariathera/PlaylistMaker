@@ -29,7 +29,7 @@ val searchModule = module {
     }
 
     single<TracksRepository> {
-        TracksRepositoryImpl(get())
+        TracksRepositoryImpl(get(), get())
     }
 
     factory<GetTracksInteractor> {
