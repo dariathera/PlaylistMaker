@@ -9,7 +9,7 @@ import com.practicum.playlistmaker.library.domain.FavoritesInteractor
 import com.practicum.playlistmaker.library.ui.activity.FavoritesState
 import com.practicum.playlistmaker.search.domain.entities.Track
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
@@ -22,7 +22,7 @@ class FavoritesViewModel(
     fun updateState() {
         val favoriteTracks: MutableList<Track> = mutableListOf<Track>()
         viewModelScope.launch(Dispatchers.IO) {
-            favoriteTracks.addAll(favoritesInteractor.getAllFavorites().first())
+            favoriteTracks.addAll(favoritesInteractor.getAllFavorites().firstOrNull() ?: emptyList())
             if (favoriteTracks.isEmpty()) {
                 stateLiveData.postValue(FavoritesState.NoFavoritesTracks)
             } else {

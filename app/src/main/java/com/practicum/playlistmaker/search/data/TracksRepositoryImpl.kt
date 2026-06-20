@@ -31,7 +31,7 @@ class TracksRepositoryImpl(
                 emit(
                     Resource.Success<MutableList<Track>>(
                         response.results.map { result ->
-                            val track = Track(
+                            Track(
                                 trackName = result.trackName,
                                 artistName = result.artistName,
                                 trackTime = result.trackTimeMillis,
@@ -43,8 +43,6 @@ class TracksRepositoryImpl(
                                 country = result.country,
                                 previewUrl = result.previewUrl
                             )
-                            track.isFavorite = track.trackId in favoriteIdList
-                            track
                         }.toMutableList()
                     )
                 )
@@ -52,6 +50,9 @@ class TracksRepositoryImpl(
             is NetResponse.ServerError ->
                 emit(
                     Resource.Error<MutableList<Track>>(
+
+
+
                         "Ошибка сервера, код ${response.resultCode}"
                     )
                 )

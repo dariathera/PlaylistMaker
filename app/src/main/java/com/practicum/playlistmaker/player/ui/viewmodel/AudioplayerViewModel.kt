@@ -15,6 +15,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.library.domain.FavoritesInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 
 class AudioplayerViewModel(
@@ -38,10 +39,11 @@ class AudioplayerViewModel(
     private val showMessageLiveData = SingleLiveEvent<String>()
     fun observeShowMessage(): LiveData<String> = showMessageLiveData
 
-    private val isFavoriteLiveData = MutableLiveData<Boolean>(track.isFavorite)
+    private val isFavoriteLiveData = MutableLiveData<Boolean>(false)
     fun observeIsFavorite(): LiveData<Boolean> = isFavoriteLiveData
 
     init {
+        postValueisFavoriteLiveData()
         preparePlayer()
         timerManager.addListener(this)
     }
@@ -138,12 +140,21 @@ class AudioplayerViewModel(
 
     fun onFavoriteClicked() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (track.isFavorite) {
+            val trackIsFavorite = isFavoriteLiveData.value ?: false
+            if (trackIsFavorite) {
                 favoritesInteractor.deleteFavorite(track)
             } else {
                 favoritesInteractor.addNewFavorite(track)
             }
-            isFavoriteLiveData.postValue(track.isFavorite)
+            postValueisFavoriteLiveData()
+        }
+    }
+
+    private fun postValueisFavoriteLiveData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val favoriteTracks: MutableList<Track> = mutableListOf<Track>()
+            favoriteTracks.addAll(favoritesInteractor.getAllFavorites().firstOrNull() ?: emptyList())
+            isFavoriteLiveData.postValue(track in favoriteTracks)
         }
     }
 

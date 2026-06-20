@@ -26,8 +26,6 @@ data class Track(
 ): Parcelable {
     @PrimaryKey(autoGenerate = true)
     var dbId: Long = 0
-    @Ignore
-    var isFavorite: Boolean = false
     fun getHighArtworkUrl() : String {
         return artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
     }

@@ -19,10 +19,6 @@ class SearchHistoryRepositoryImpl (
         val json = saverClient.getFromMemory() ?: return ArrayDeque<Track>()
         val type = object : TypeToken<ArrayDeque<Track>>() {}.type
         val array: ArrayDeque<Track> = gson.fromJson(json, type)
-        val favoriteIdList = appDatabase.getTrackDao().getTrackIds()
-        for (track in array) {
-            track.isFavorite = track.trackId in favoriteIdList
-        }
         return array
     }
 
