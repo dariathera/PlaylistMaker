@@ -5,16 +5,18 @@ import com.practicum.playlistmaker.player.ui.viewmodel.AudioplayerViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
+import com.practicum.playlistmaker.search.domain.entities.Track
 
 val audioplayerViewModelModule = module {
-    viewModel { (trackUrl: String?) ->
+    viewModel { (track: Track) ->
 
         val mediaPlayer : MediaPlayer = get()
 
         AudioplayerViewModel(
-            trackUrl,
+            track,
             mediaPlayer,
-            get {parametersOf(mediaPlayer)}
+            get {parametersOf(mediaPlayer)},
+            get()
         )
     }
 }

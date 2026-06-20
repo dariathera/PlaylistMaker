@@ -5,23 +5,29 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.player.ui.mediaplayer.MediaplayerState
 import com.practicum.playlistmaker.player.ui.timer.TimeTextObserving
 import com.practicum.playlistmaker.player.ui.timer.TimerManager
 import com.practicum.playlistmaker.util.SingleLiveEvent
 import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.library.domain.FavoritesInteractor
+import com.practicum.playlistmaker.search.domain.entities.Track
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
 class AudioplayerViewModel(
-    private val trackUrl: String?,
+    private val track: Track,
     private val mediaPlayer : MediaPlayer,
-    private val timerManager : TimerManager
+    private val timerManager : TimerManager,
+    private val favoritesInteractor : FavoritesInteractor
 ) : ViewModel(), TimeTextObserving {
 
     // Для возобновления воспроизведения после поворота
     private var savedPlayerPosition: Int = 0
     private var savedIsPlaying: Boolean = false
-
     private var playerState : MediaplayerState = MediaplayerState.DEFAULT
 
     private val isPlayingLiveData = MutableLiveData<Boolean>(false)
@@ -33,7 +39,11 @@ class AudioplayerViewModel(
     private val showMessageLiveData = SingleLiveEvent<String>()
     fun observeShowMessage(): LiveData<String> = showMessageLiveData
 
+    private val isFavoriteLiveData = MutableLiveData<Boolean>(false)
+    fun observeIsFavorite(): LiveData<Boolean> = isFavoriteLiveData
+
     init {
+        postValueisFavoriteLiveData()
         preparePlayer()
         timerManager.addListener(this)
     }
@@ -56,7 +66,7 @@ class AudioplayerViewModel(
 
     // Управление воспроизведением
     private fun preparePlayer() {
-        mediaPlayer.setDataSource(trackUrl)
+        mediaPlayer.setDataSource(track.previewUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
             if (savedPlayerPosition > 0) {
@@ -105,7 +115,7 @@ class AudioplayerViewModel(
                 timerManager.stopTimer()
             }
             MediaplayerState.PREPARED, MediaplayerState.PAUSED -> {
-                if (trackUrl != null) {
+                if (track.previewUrl != null) {
                     startPlayer()
                     timerManager.startTimer()
                 } else {
@@ -126,6 +136,26 @@ class AudioplayerViewModel(
 
     override fun setNewTimeText(timeText: String) {
         timeTextLiveData.postValue(timeText)
+    }
+
+    fun onFavoriteClicked() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val trackIsFavorite = isFavoriteLiveData.value ?: false
+            if (trackIsFavorite) {
+                favoritesInteractor.deleteFavorite(track)
+            } else {
+                favoritesInteractor.addNewFavorite(track)
+            }
+            postValueisFavoriteLiveData()
+        }
+    }
+
+    private fun postValueisFavoriteLiveData() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val favoriteTracks: MutableList<Track> = mutableListOf<Track>()
+            favoriteTracks.addAll(favoritesInteractor.getAllFavorites().firstOrNull() ?: emptyList())
+            isFavoriteLiveData.postValue(track in favoriteTracks)
+        }
     }
 
     companion object {

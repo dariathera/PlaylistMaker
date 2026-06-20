@@ -1,18 +1,33 @@
 package com.practicum.playlistmaker.library.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.library.domain.FavoritesInteractor
 import com.practicum.playlistmaker.library.ui.activity.FavoritesState
+import com.practicum.playlistmaker.search.domain.entities.Track
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
-class FavoritesViewModel : ViewModel() {
+class FavoritesViewModel(
+    private val favoritesInteractor : FavoritesInteractor
+) : ViewModel() {
     private val stateLiveData = MutableLiveData<FavoritesState>(
-        updateState())
+        FavoritesState.Loading)
     fun observeState(): LiveData<FavoritesState> = stateLiveData
 
-    private fun updateState() : FavoritesState {
-        // логика получения треков из избранного +
-        // определение состояния фрагмента
-        return FavoritesState.NoFavoritesTracks
+    fun updateState() {
+        val favoriteTracks: MutableList<Track> = mutableListOf<Track>()
+        viewModelScope.launch(Dispatchers.IO) {
+            favoriteTracks.addAll(favoritesInteractor.getAllFavorites().firstOrNull() ?: emptyList())
+            if (favoriteTracks.isEmpty()) {
+                stateLiveData.postValue(FavoritesState.NoFavoritesTracks)
+            } else {
+                stateLiveData.postValue(FavoritesState.FavoritesTracks(favoriteTracks))
+            }
+        }
     }
 }

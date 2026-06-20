@@ -10,11 +10,14 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentLibraryBinding
+import com.practicum.playlistmaker.search.ui.activity.SearchTrackAdapter
 
 class LibraryFragment : Fragment()  {
     private lateinit var binding: FragmentLibraryBinding
     private lateinit var tabMediator: TabLayoutMediator
     private val space = "    "
+    private var searchTrackAdapter : SearchTrackAdapter? = null
+    private var savedTracksAdapter : SearchTrackAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentLibraryBinding.inflate(inflater, container, false)

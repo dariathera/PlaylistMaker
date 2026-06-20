@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.search.data
 
+import com.practicum.playlistmaker.db.data.AppDatabase
 import com.practicum.playlistmaker.search.data.client.NetworkClient
 import com.practicum.playlistmaker.search.data.dto.GetTracksRequest
 import com.practicum.playlistmaker.search.data.dto.NetResponse
@@ -9,8 +10,10 @@ import com.practicum.playlistmaker.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class TracksRepositoryImpl(private val networkClient: NetworkClient):
-    TracksRepository {
+class TracksRepositoryImpl(
+    private val networkClient: NetworkClient,
+    private val appDatabase: AppDatabase
+): TracksRepository {
 
     override fun getMusic(expression: String) : Flow<Resource<MutableList<Track>>> = flow {
 
@@ -23,7 +26,8 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient):
                         mutableListOf<Track>()
                     )
                 )
-            is NetResponse.GoodNetResponse ->
+            is NetResponse.GoodNetResponse -> {
+                val favoriteIdList = appDatabase.getTrackDao().getTrackIds()
                 emit(
                     Resource.Success<MutableList<Track>>(
                         response.results.map { result ->
@@ -42,9 +46,13 @@ class TracksRepositoryImpl(private val networkClient: NetworkClient):
                         }.toMutableList()
                     )
                 )
+            }
             is NetResponse.ServerError ->
                 emit(
                     Resource.Error<MutableList<Track>>(
+
+
+
                         "Ошибка сервера, код ${response.resultCode}"
                     )
                 )

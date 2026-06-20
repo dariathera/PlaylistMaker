@@ -59,7 +59,7 @@ class AudioplayerFragment : Fragment() {
         }
 
         viewModel = getViewModel<AudioplayerViewModel> {
-            parametersOf(track.previewUrl)
+            parametersOf(track)
         }
 
         // Кнопка назад
@@ -112,6 +112,18 @@ class AudioplayerFragment : Fragment() {
 
         viewModel.observeShowMessage().observe(viewLifecycleOwner) {
             Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+        }
+
+        binding.btnLike.setOnClickListener {
+            viewModel.onFavoriteClicked()
+        }
+
+        viewModel.observeIsFavorite().observe(viewLifecycleOwner) {
+            if (it == true) {
+                binding.btnLike.setImageResource(R.drawable.ic_filled_heart_250)
+            } else {
+                binding.btnLike.setImageResource(R.drawable.ic_blank_heart_250)
+            }
         }
     }
 
