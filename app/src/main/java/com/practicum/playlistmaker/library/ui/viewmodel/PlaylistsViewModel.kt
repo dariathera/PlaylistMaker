@@ -2,17 +2,41 @@ package com.practicum.playlistmaker.library.ui.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.library.domain.PlaylistInteractor
+import com.practicum.playlistmaker.library.domain.PrivateStorageApi
+import com.practicum.playlistmaker.library.domain.entities.PlaylistGeneralInformation
 import com.practicum.playlistmaker.library.ui.activity.PlaylistsState
+import com.practicum.playlistmaker.search.domain.entities.Track
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class PlaylistsViewModel : ViewModel() {
+class PlaylistsViewModel(
+    private val playlistInteractor: PlaylistInteractor,
+    private val privateStorageApi: PrivateStorageApi
+) : ViewModel() {
     private val stateLiveData = MutableLiveData<PlaylistsState>(
-        updateState())
+        PlaylistsState.NoPlaylists
+    )
     fun observeState(): LiveData<PlaylistsState> = stateLiveData
 
-    private fun updateState() : PlaylistsState {
-        // логика получения плейлистов пользователя +
-        // определение состояния фрагмента
-        return PlaylistsState.NoPlaylists
+    init {
+        updateState()
+    }
+
+    fun updateState() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val playlists : List<PlaylistGeneralInformation> = playlistInteractor.getAllPlaylistsGeneralInfo()
+            if (playlists.size > 0) {
+                for (playlist in playlists) {
+                    playlist.uri = privateStorageApi.getFileUri(playlist.coverFileName)
+                }
+                stateLiveData.postValue(PlaylistsState.UserPlaylists(playlists))
+            } else {
+                stateLiveData.postValue(PlaylistsState.NoPlaylists)
+            }
+        }
     }
 }

@@ -44,4 +44,29 @@
         app:itemTextAppearanceActiveBoldEnabled="false"
         app:itemIconSize="@dimen/bottomNavIconSize"
         app:backgroundTint="?attr/colorPrimary" />
+
+
+    <TextView
+        android:id="@+id/notificationTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:background="?attr/colorOnPrimary"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:fontFamily="@font/ys_display_regular"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:elevation="8dp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
