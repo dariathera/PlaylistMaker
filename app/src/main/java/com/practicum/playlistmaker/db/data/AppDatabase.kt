@@ -2,19 +2,24 @@ package com.practicum.playlistmaker.db.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import com.practicum.playlistmaker.library.domain.entities.Playlist
 import com.practicum.playlistmaker.search.domain.entities.Track
+import com.practicum.playlistmaker.library.domain.entities.PlaylistWithNoTracks
 
 @Database(
-    version = 6,
-    entities = [Track::class, Playlist::class],
+    version = 9,
+    entities = [
+        Track::class,
+        PlaylistWithNoTracks::class,
+        FavoriteTrack::class,
+        PlaylistTrackCrossRef::class
+               ],
     exportSchema = false
 )
-@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun getTrackDao(): TrackDao
     abstract fun playlistDao(): PlaylistDao
+    abstract fun getFavoriteDao(): FavoriteDao
+    abstract fun getPlaylistTrackCrossRefDao(): PlaylistTrackCrossRefDao
 
 }

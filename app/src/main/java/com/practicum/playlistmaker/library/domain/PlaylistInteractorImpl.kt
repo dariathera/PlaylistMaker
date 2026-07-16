@@ -28,5 +28,4 @@ class PlaylistInteractorImpl(private val repository : PlaylistApi) : PlaylistInt
     override suspend fun getPlaylistNameByPlaylistId(id: Long): String? {
         return repository.getPlaylistNameByPlaylistId(id)
     }
-
 }

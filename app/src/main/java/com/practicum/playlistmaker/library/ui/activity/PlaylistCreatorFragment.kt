@@ -1,21 +1,14 @@
 package com.practicum.playlistmaker.library.ui.activity
 
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
@@ -23,21 +16,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistCreatorBinding
 import com.practicum.playlistmaker.library.ui.viewmodel.PlaylistCreatorViewModel
 import com.practicum.playlistmaker.root.ui.viewmodel.SharedViewModel
-import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModel
 import com.practicum.playlistmaker.util.DrawingTools
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.qualifier
-import java.io.File
-import java.io.FileOutputStream
 import kotlin.getValue
 
 class PlaylistCreatorFragment  : Fragment() {
@@ -45,12 +33,8 @@ class PlaylistCreatorFragment  : Fragment() {
     companion object {
         private const val roundRadiusDp: Float = 8f
 
-        // private const val NUMBER = "number"
-
         fun newInstance(number: Int) = PlaylistCreatorFragment().apply {
-            arguments = Bundle().apply {
-                // putInt(NUMBER, number)
-            }
+            arguments = Bundle().apply {}
         }
     }
 
@@ -100,13 +84,11 @@ class PlaylistCreatorFragment  : Fragment() {
         }
 
         binding.btnSave.setOnClickListener {
-            Log.d("NewPlaylist", "Вызов viewModel.createNewPlaylist()")
             viewModel.createNewPlaylist(sharedViewModel)
         }
 
         viewModel.observeIsSavingCompleted().observe(viewLifecycleOwner){
             if (it) {
-                Log.d("NewPlaylist", "Закрытие фрагмента")
                 findNavController().navigateUp()
             }
         }
@@ -148,7 +130,6 @@ class PlaylistCreatorFragment  : Fragment() {
 
         binding.inputDescription.editText?.addTextChangedListener(descriptionTextWatcher)
 
-
         // Выбор картинки
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -188,7 +169,6 @@ class PlaylistCreatorFragment  : Fragment() {
 
     }
 
-
     // Общая логика при нажатии «Назад».
     private fun handleBack() {
         if (!viewModel.formIsEmpty()) {
@@ -210,5 +190,4 @@ class PlaylistCreatorFragment  : Fragment() {
             }
             .show()
     }
-
 }

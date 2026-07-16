@@ -8,13 +8,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.AddToPlaylistListItemBinding
-import com.practicum.playlistmaker.databinding.PlaylistListItemBinding
-import com.practicum.playlistmaker.databinding.SearchTrackListItemBinding
 import com.practicum.playlistmaker.library.domain.entities.PlaylistGeneralInformation
-import com.practicum.playlistmaker.library.ui.activity.PlaylistViewHolder
-import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.util.DrawingTools
-import com.practicum.playlistmaker.util.FormatTools
 
 class AddToPlaylistViewHolder(private val binding: AddToPlaylistListItemBinding) :
     RecyclerView.ViewHolder(binding.root) {

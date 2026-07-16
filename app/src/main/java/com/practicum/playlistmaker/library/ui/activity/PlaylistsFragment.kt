@@ -14,10 +14,6 @@ import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.practicum.playlistmaker.library.ui.viewmodel.PlaylistsViewModel
-import com.practicum.playlistmaker.player.ui.activity.AudioplayerFragment
-import com.practicum.playlistmaker.root.ui.activity.RootActivity
-import com.practicum.playlistmaker.search.domain.entities.Track
-import com.practicum.playlistmaker.search.ui.activity.SearchTrackAdapter
 import debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
@@ -25,12 +21,9 @@ import kotlin.getValue
 class PlaylistsFragment : Fragment() {
 
     companion object {
-        // private const val NUMBER = "number"
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         fun newInstance(number: Int) = PlaylistsFragment().apply {
-            arguments = Bundle().apply {
-                // putInt(NUMBER, number)
-            }
+            arguments = Bundle().apply {}
         }
     }
 
@@ -38,7 +31,6 @@ class PlaylistsFragment : Fragment() {
     private lateinit var binding: FragmentPlaylistsBinding
     private var playlistAdapter : PlaylistAdapter? = null
     private lateinit var onPlaylistClickDebounce: (Long) -> Unit
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {

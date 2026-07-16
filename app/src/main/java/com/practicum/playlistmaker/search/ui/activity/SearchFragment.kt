@@ -173,9 +173,7 @@ class SearchFragment : Fragment() {
                 AudioplayerFragment.createArgs(track)
             )
         }
-
     }
-
 
     override fun onResume() {
         super.onResume()

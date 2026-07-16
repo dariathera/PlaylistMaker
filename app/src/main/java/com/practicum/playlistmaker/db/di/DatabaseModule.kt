@@ -16,5 +16,4 @@ val databaseModule = module {
             .fallbackToDestructiveMigration()
             .build()
     }
-
 }

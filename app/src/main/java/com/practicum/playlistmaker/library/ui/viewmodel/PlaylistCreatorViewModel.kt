@@ -2,23 +2,16 @@ package com.practicum.playlistmaker.library.ui.viewmodel
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
-import android.widget.Toast
-import androidx.annotation.UiContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.library.domain.CreatePlaylistUseCase
-import com.practicum.playlistmaker.library.ui.activity.PlaylistsState
 import com.practicum.playlistmaker.root.ui.viewmodel.SharedViewModel
-import com.practicum.playlistmaker.util.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class PlaylistCreatorViewModel(
     private val createPlaylistUseCase: CreatePlaylistUseCase,
@@ -57,20 +50,10 @@ class PlaylistCreatorViewModel(
     fun  handleNameInput(s: CharSequence?) {
         name = s?.toString() ?: ""
         isSaveButtonEnabledLiveData.postValue(!name.isEmpty())
-        /*
-        if (s.isNullOrEmpty()) {
-            isSaveButtonEnabledLiveData.postValue(false)
-        } else {
-            isSaveButtonEnabledLiveData.postValue(true)
-        }
-        name = s.toString()
-
-         */
     }
 
     fun handleDescriptionInput(s: CharSequence?) {
         description = s?.toString() ?: ""
-        // description = s.toString()
     }
 
     fun handleImageURI(_uri: Uri?) {
@@ -82,26 +65,17 @@ class PlaylistCreatorViewModel(
     }
 
     fun createNewPlaylist(sharedViewModel: SharedViewModel) {
-        Log.d("NewPlaylist", "createNewPlaylist запущена")
-
         if (!name.isEmpty()) {
             viewModelScope.launch(Dispatchers.IO) {
-                Log.d("NewPlaylist", "Начала работать корутина")
-
                 createPlaylistUseCase.create(
                     name,
                     description,
                     uri
                 )
-
                 isSavingCompletedLiveData.postValue(true)
-
-                // sharedViewModel.setToastMessage(context.getString(R.string.playlist_is_created))
                 sharedViewModel.setToastMessage(
                     context.getString(R.string.playlist_created_message, name)
                 )
-
-                Log.d("NewPlaylist", "Корутина закончила работать")
             }
         }
     }

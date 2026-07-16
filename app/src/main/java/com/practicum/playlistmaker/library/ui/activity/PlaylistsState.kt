@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.library.ui.activity
 
-import com.practicum.playlistmaker.library.domain.entities.Playlist
 import com.practicum.playlistmaker.library.domain.entities.PlaylistGeneralInformation
 
 sealed interface  PlaylistsState {

@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.player.ui.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,9 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentAudioplayerBinding
 import com.practicum.playlistmaker.library.domain.entities.PlaylistGeneralInformation
-import com.practicum.playlistmaker.library.ui.activity.PlaylistCreatorFragment
 import com.practicum.playlistmaker.player.ui.viewmodel.AudioplayerViewModel
-import com.practicum.playlistmaker.root.ui.activity.RootActivity
 import com.practicum.playlistmaker.root.ui.viewmodel.SharedViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.util.DrawingTools
@@ -50,7 +47,6 @@ class AudioplayerFragment : Fragment() {
     private val roundRadiusDp : Float = 8f
     private var playlistAdapter : AddToPlaylistAdapter? = null
     private lateinit var onClickDebounce: (Unit) -> Unit
-
     private var screenHeight: Int = 0
     private val sharedViewModel: SharedViewModel by activityViewModel()
 
@@ -193,7 +189,6 @@ class AudioplayerFragment : Fragment() {
             false
         ) {}
 
-
         playlistAdapter = AddToPlaylistAdapter(
             {id: Long ->
                 viewModel.handleClickOnPlaylist(id, sharedViewModel)
@@ -205,7 +200,6 @@ class AudioplayerFragment : Fragment() {
         binding.bottomsheet.recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.observePlaylists().observe(viewLifecycleOwner){
-            Log.d("bottomSheet", "Плейлисты получены: $it")
             playlistAdapter?.updateData(it)
         }
 
@@ -227,6 +221,7 @@ class AudioplayerFragment : Fragment() {
         // В xml ее настроить не получилось
         val displayMetrics = resources.displayMetrics
         screenHeight = displayMetrics.heightPixels
+        viewModel.requestPlaylists()
     }
 
     override fun onPause() {

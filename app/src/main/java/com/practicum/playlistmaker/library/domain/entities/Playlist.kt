@@ -1,32 +1,21 @@
 package com.practicum.playlistmaker.library.domain.entities
 
-import android.net.Uri
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room.Embedded
+import androidx.room.Junction
+import androidx.room.Relation
 import com.practicum.playlistmaker.search.domain.entities.Track
+import com.practicum.playlistmaker.db.data.PlaylistTrackCrossRef
 
-@Entity(
-    tableName = "playlist_table"
-)
 data class Playlist(
-    val name: String,
-    val description: String,
-)
-{
-    @PrimaryKey(autoGenerate = true)
-    var id : Long = 0
-    var coverFileName: String? = null
+    @Embedded val playlist: PlaylistWithNoTracks,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "trackId",
+        associateBy = Junction(
+            value = PlaylistTrackCrossRef::class,
+            parentColumn = "playlistId",
+            entityColumn = "trackId"
+        )
+    )
     var trackList: MutableList<Track> = mutableListOf<Track>()
-    @Ignore
-    var uri: Uri? = null
-
-    constructor(
-        _name: String,
-        _description: String,
-        _coverFileName: String?
-    ) : this(_name, _description) {
-        coverFileName = _coverFileName
-    }
-
-}
+)

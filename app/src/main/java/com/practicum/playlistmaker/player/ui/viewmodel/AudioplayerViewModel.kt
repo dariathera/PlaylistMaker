@@ -18,7 +18,6 @@ import com.practicum.playlistmaker.library.domain.PlaylistInteractor
 import com.practicum.playlistmaker.library.domain.PrivateStorageApi
 import com.practicum.playlistmaker.library.domain.entities.Playlist
 import com.practicum.playlistmaker.library.domain.entities.PlaylistGeneralInformation
-import com.practicum.playlistmaker.library.ui.activity.PlaylistsState
 import com.practicum.playlistmaker.root.ui.viewmodel.SharedViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
 import kotlinx.coroutines.Dispatchers
@@ -206,7 +205,6 @@ class AudioplayerViewModel(
                 context.getString(R.string.track_already_added, playlistName)
             )
         }
-
     }
 
     private suspend fun isTrackincludedById(id: Long) : Boolean {
@@ -225,58 +223,16 @@ class AudioplayerViewModel(
     // Я не проверяю, включён ли трек в плейлист -
     // это должно было быть на предыдущем этапе.
     private suspend fun addTrackToPlaylist(id: Long, sharedViewModel: SharedViewModel){
-        Log.d("playlistUpdated", id.toString())
         val playlist: Playlist? = playlistInteractor.getPlaylistById(id)
-        Log.d("playlistUpdated", playlist.toString())
         if (playlist != null) {
-            playlist
             playlist.trackList.add(track)
             playlistInteractor.updatePlaylist(playlist)
             sharedViewModel.setToastMessage(
-                context.getString(R.string.added_to_playlist, playlist.name)
+                context.getString(R.string.added_to_playlist, playlist.playlist.name)
             )
-
             val playlistUpdated =  playlistInteractor.getPlaylistById(id)
-            Log.d("playlistUpdated", playlistUpdated.toString())
-
-
         }
     }
-
-    /*
-    fun isTrackincludedById(id: Long) {
-        Log.d("IsTrackIncluded", "в isTrackincludedById пришло значение: $id")
-
-        viewModelScope.launch(Dispatchers.IO) {
-
-            val trackList: MutableList<Track> = playlistInteractor.getTracksIdListByPlaylistId(id)
-            var trackIsAlreadyIncluded = false
-            for (element in trackList) {
-                if (element.trackId == track.trackId) {
-                    trackIsAlreadyIncluded = true
-                    break
-                }
-            }
-            isTrackIncludedByIdLiveData.postValue(Pair(trackIsAlreadyIncluded, id))
-        }
-    }
-
-    // Есть риск добавить трек повторно.
-    // Я не проверяю, включён ли трек в плейлист -
-    // это должно было быть на предыдущем этапе.
-    fun addTrackToPlaylist(id: Long, sharedViewModel: SharedViewModel){
-        viewModelScope.launch(Dispatchers.IO) {
-            val playlist: Playlist? = playlistInteractor.getPlaylistById(id)
-            if (playlist != null) {
-                playlist.trackList.add(track)
-                playlistInteractor.updatePlaylist(playlist)
-                sharedViewModel.setToastMessage(
-                    context.getString(R.string.added_to_playlist, playlist.name)
-                )
-            }
-        }
-    }
-    */
 
     companion object {
         private const val START_TIME_TEXT = "00:00"

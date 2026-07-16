@@ -3,7 +3,6 @@ package com.practicum.playlistmaker.library.di
 import com.practicum.playlistmaker.library.ui.viewmodel.FavoritesViewModel
 import com.practicum.playlistmaker.library.ui.viewmodel.PlaylistCreatorViewModel
 import com.practicum.playlistmaker.library.ui.viewmodel.PlaylistsViewModel
-import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

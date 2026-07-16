@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.search.ui.activity
 
 import android.content.Context
 import android.view.ViewGroup
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.search_history.domain.GetHistoryInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
