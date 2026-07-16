@@ -30,6 +30,7 @@ class RootActivity : AppCompatActivity() {
 
     private val sharedViewModel: SharedViewModel by viewModel()
     private var navigationBarHeight = 0
+    private var currentLayoutIsSearchLayout: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,14 +54,21 @@ class RootActivity : AppCompatActivity() {
                 R.id.playlistCreatorFragment -> {
                     binding.bottomNavigationView.visibility = View.GONE
                     setupKeyboardResize(true)
+                    currentLayoutIsSearchLayout = false
                 }
                 R.id.audioplayerFragment -> {
                     binding.bottomNavigationView.visibility = View.GONE
                     setupKeyboardResize(false)
+                    currentLayoutIsSearchLayout = false
+                }
+                R.id.searchFragment -> {
+                    setupKeyboardResize(true)
+                    currentLayoutIsSearchLayout = true
                 }
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE
                     setupKeyboardResize(false)
+                    currentLayoutIsSearchLayout = false
                 }
             }
         }
@@ -112,8 +120,16 @@ class RootActivity : AppCompatActivity() {
                 if (keypadHeight != previousKeypadHeight) {
                     previousKeypadHeight = keypadHeight
                     val isKeyboardVisible = keypadHeight > screenHeight * 0.15
-                    val bottomPadding = if (isKeyboardVisible) keypadHeight else 0
+                    val bottomPadding = if (isKeyboardVisible && !currentLayoutIsSearchLayout) keypadHeight else 0
                     rootView.setPadding(0, 0, 0, bottomPadding)
+
+                    if (currentLayoutIsSearchLayout) {
+                        if (isKeyboardVisible) {
+                            binding.bottomNavigationView.visibility = View.GONE
+                        } else {
+                            binding.bottomNavigationView.visibility = View.VISIBLE
+                        }
+                    }
                 }
             }
         }

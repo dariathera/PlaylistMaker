@@ -7,7 +7,10 @@ import com.practicum.playlistmaker.search.domain.entities.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class FavoritesApiImpl(private val appDatabase: AppDatabase) : FavoritesApi {
+class
+
+
+FavoritesApiImpl(private val appDatabase: AppDatabase) : FavoritesApi {
 
     override suspend fun addNewFavorite(track: Track) {
         appDatabase.getTrackDao().insertNewTrack(track)

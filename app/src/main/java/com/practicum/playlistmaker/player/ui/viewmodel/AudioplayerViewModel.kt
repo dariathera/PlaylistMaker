@@ -208,10 +208,10 @@ class AudioplayerViewModel(
     }
 
     private suspend fun isTrackincludedById(id: Long) : Boolean {
-        val trackList: List<Track> = playlistInteractor.getTracksIdListByPlaylistId(id)
+        val trackIdList: List<Long> = playlistInteractor.getTracksIdListByPlaylistId(id)
         var trackIsAlreadyIncluded = false
-        for (element in trackList) {
-            if (element.trackId == track.trackId) {
+        for (element in trackIdList) {
+            if (element == track.trackId) {
                 trackIsAlreadyIncluded = true
                 break
             }

@@ -21,4 +21,7 @@ interface FavoriteDao {
     ORDER BY favorite_table.id DESC
     """)
     suspend fun getAllFavoritesOrdered(): List<Track>
+
+    @Query("DELETE FROM favorite_table")
+    suspend fun clearAll()
 }

@@ -16,7 +16,7 @@ interface PlaylistDao {
     @Query("SELECT * FROM playlist_table WHERE id = :playlistId")
     suspend fun getPlaylistWithTracks(playlistId: Long): Playlist?
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(entity = PlaylistWithNoTracks::class, onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPlaylist(playlist: PlaylistWithNoTracks): Long
 
     @Update
@@ -30,5 +30,8 @@ interface PlaylistDao {
 
     @Query("SELECT * FROM playlist_table ORDER BY id DESC")
     suspend fun getAllPlaylists(): List<Playlist>
+
+    @Query("DELETE FROM playlist_table")
+    suspend fun clearAll()
 
 }

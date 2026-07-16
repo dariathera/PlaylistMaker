@@ -8,7 +8,8 @@ import androidx.room.Query
 
 @Dao
 interface PlaylistTrackCrossRefDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+
+    @Insert(entity = PlaylistTrackCrossRef::class, onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCrossRef(crossRef: PlaylistTrackCrossRef)
 
     @Delete
@@ -22,4 +23,7 @@ interface PlaylistTrackCrossRefDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM playlist_track_cross_ref WHERE trackId = :trackId)")
     suspend fun isTrackInAnyPlaylist(trackId: Long): Boolean
+
+    @Query("DELETE FROM playlist_track_cross_ref")
+    suspend fun clearAll()
 }

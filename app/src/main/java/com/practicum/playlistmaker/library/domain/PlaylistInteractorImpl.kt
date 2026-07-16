@@ -17,7 +17,7 @@ class PlaylistInteractorImpl(private val repository : PlaylistApi) : PlaylistInt
         return repository.getAllPlaylistsGeneralInfo()
     }
 
-    override suspend fun getTracksIdListByPlaylistId(id: Long): MutableList<Track> {
+    override suspend fun getTracksIdListByPlaylistId(id: Long): List<Long> {
         return repository.getTracksIdListByPlaylistId(id)
     }
 

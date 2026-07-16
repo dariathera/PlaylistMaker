@@ -8,7 +8,7 @@ interface PlaylistInteractor {
     suspend fun addNewPlaylist(playlist: Playlist) : Long
     suspend fun updatePlaylist(playlist: Playlist?)
     suspend fun getAllPlaylistsGeneralInfo() :  List<PlaylistGeneralInformation>
-    suspend fun getTracksIdListByPlaylistId(id: Long): MutableList<Track>
+    suspend fun getTracksIdListByPlaylistId(id: Long): List<Long>
     suspend fun getPlaylistById(id: Long): Playlist?
     suspend fun getPlaylistNameByPlaylistId(id: Long): String?
 }

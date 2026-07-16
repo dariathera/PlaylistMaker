@@ -26,6 +26,7 @@ class PlaylistApiImpl(private val appDatabase: AppDatabase) : PlaylistApi {
             crossRefDao.insertCrossRef(
                 PlaylistTrackCrossRef(playlistId, track.trackId)
             )
+            trackDao.insertNewTrack(track)
         }
         return playlistId
     }
@@ -43,13 +44,12 @@ class PlaylistApiImpl(private val appDatabase: AppDatabase) : PlaylistApi {
             crossRefDao.insertCrossRef(
                 PlaylistTrackCrossRef(playlistId, track.trackId)
             )
+            trackDao.insertNewTrack(track)
         }
     }
 
-    override suspend fun getTracksIdListByPlaylistId(id: Long): MutableList<Track> {
-        val trackIds = crossRefDao.getTrackIdsForPlaylist(id)
-        if (trackIds.isEmpty()) return mutableListOf()
-        return trackDao.getTracksByIds(trackIds).toMutableList()
+    override suspend fun getTracksIdListByPlaylistId(id: Long): List<Long> {
+        return crossRefDao.getTrackIdsForPlaylist(id)
     }
 
     override suspend fun getPlaylistById(id: Long): Playlist? {
