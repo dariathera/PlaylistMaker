@@ -9,21 +9,31 @@ import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentAudioplayerBinding
+import com.practicum.playlistmaker.library.domain.entities.PlaylistGeneralInformation
 import com.practicum.playlistmaker.player.ui.viewmodel.AudioplayerViewModel
+import com.practicum.playlistmaker.root.ui.viewmodel.SharedViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.util.DrawingTools
 import com.practicum.playlistmaker.util.FormatTools
+import debounce
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
+import kotlin.getValue
 
 class AudioplayerFragment : Fragment() {
 
     companion object {
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val ARGS_TRACK = "track_key"
 
         fun createArgs(track: Track): Bundle =
@@ -35,6 +45,11 @@ class AudioplayerFragment : Fragment() {
         requireArguments().getParcelable<Track?>(ARGS_TRACK)
     }
     private val roundRadiusDp : Float = 8f
+    private var playlistAdapter : AddToPlaylistAdapter? = null
+    private lateinit var onClickDebounce: (Unit) -> Unit
+    private var screenHeight: Int = 0
+    private val sharedViewModel: SharedViewModel by activityViewModel()
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentAudioplayerBinding.inflate(inflater, container, false)
@@ -82,16 +97,15 @@ class AudioplayerFragment : Fragment() {
         Glide.with(binding.artwork)
             .load(track.getHighArtworkUrl())
             .placeholder(R.drawable.ic_artwork_placeholder_45)
-            .centerCrop()
             .transform(
+                CenterCrop(),
                 RoundedCorners(
                     DrawingTools.dpToPx(
                         roundRadiusDp,
-                        binding.artwork.context
+                        requireContext()
                     )
                 )
-            )
-            .into(binding.artwork)
+            ).into(binding.artwork)
 
         // Управление воспроизведением
         viewModel.observeIsPlaying().observe(viewLifecycleOwner) {
@@ -125,6 +139,89 @@ class AudioplayerFragment : Fragment() {
                 binding.btnLike.setImageResource(R.drawable.ic_blank_heart_250)
             }
         }
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomsheet.root).apply {
+            isHideable = true          // разрешаем скрытие
+            halfExpandedRatio = 0.5f   // Для высоты экрана для состояния HALF_EXPANDED (0.5 = половина)
+            peekHeight = 0             // в свёрнутом состоянии высота 0
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        binding.btnPlaylist.setOnClickListener {
+            onClickDebounce(Unit)
+            playlistAdapter?.updateData(listOf<PlaylistGeneralInformation>())
+            val targetHeight = (screenHeight / 3).toInt()
+            bottomSheetBehavior.peekHeight = targetHeight
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            viewModel.requestPlaylists()
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.scrim.visibility = View.GONE
+                    }
+                    else -> {
+                        val targetHeight = (screenHeight * 2 / 3).toInt()
+                        binding.bottomsheet.recyclerView.layoutParams.height = targetHeight
+                        binding.scrim.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                if (slideOffset > 0) {
+                    binding.scrim.visibility = View.VISIBLE
+                } else {
+                    binding.scrim.visibility = View.GONE
+                }
+            }
+        })
+
+        binding.scrim.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        onClickDebounce = debounce<Unit>(
+            CLICK_DEBOUNCE_DELAY,
+            viewLifecycleOwner.lifecycleScope,
+            false
+        ) {}
+
+        playlistAdapter = AddToPlaylistAdapter(
+            {id: Long ->
+                viewModel.handleClickOnPlaylist(id, sharedViewModel)
+                onClickDebounce(Unit)
+            }
+        )
+
+        binding.bottomsheet.recyclerView.adapter = playlistAdapter
+        binding.bottomsheet.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        viewModel.observePlaylists().observe(viewLifecycleOwner){
+            playlistAdapter?.updateData(it)
+        }
+
+        viewModel.observeHideBottomSheet().observe(viewLifecycleOwner){
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        binding.bottomsheet.btnNewPlaylist.setOnClickListener { it ->
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            findNavController().navigate(
+                R.id.action_audioplayerFragment_to_playlistCreatorFragment
+            )
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Всё это нужно для установки высоты списка внутри bottomsheet
+        // В xml ее настроить не получилось
+        val displayMetrics = resources.displayMetrics
+        screenHeight = displayMetrics.heightPixels
+        viewModel.requestPlaylists()
     }
 
     override fun onPause() {

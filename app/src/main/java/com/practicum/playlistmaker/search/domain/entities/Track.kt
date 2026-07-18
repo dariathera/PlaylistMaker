@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.search.domain.entities
 
 import android.os.Parcelable
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import kotlinx.parcelize.Parcelize
@@ -17,6 +16,7 @@ data class Track(
     val artistName: String,
     val trackTime: Int,
     val artworkUrl100: String,
+    @PrimaryKey
     val trackId: Long,
     val album: String?,
     val year: Int?,
@@ -24,8 +24,6 @@ data class Track(
     val country: String?,
     val previewUrl: String?
 ): Parcelable {
-    @PrimaryKey(autoGenerate = true)
-    var dbId: Long = 0
     fun getHighArtworkUrl() : String {
         return artworkUrl100.replaceAfterLast('/',"512x512bb.jpg")
     }

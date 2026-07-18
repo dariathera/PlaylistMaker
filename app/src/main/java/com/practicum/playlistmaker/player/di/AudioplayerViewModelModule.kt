@@ -16,6 +16,9 @@ val audioplayerViewModelModule = module {
             track,
             mediaPlayer,
             get {parametersOf(mediaPlayer)},
+            get(),
+            get(),
+            get(),
             get()
         )
     }

@@ -6,7 +6,6 @@
     style="@style/VerticalLayout"
     android:background="?attr/colorPrimary"
     tools:context="com.practicum.playlistmaker.main.ui.activity.MainFragment">
-    >
 
     <LinearLayout
         android:layout_width="match_parent"

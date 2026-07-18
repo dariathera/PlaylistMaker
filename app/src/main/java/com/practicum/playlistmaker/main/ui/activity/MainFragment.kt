@@ -29,6 +29,7 @@ class MainFragment : Fragment() {
         }
 
         // логика
+
         binding.btnSearch.setOnClickListener {
             // findNavController().navigate(R.id.action_mainFragment_to_searchFragment)
         }
@@ -41,5 +42,4 @@ class MainFragment : Fragment() {
             // findNavController().navigate(R.id.action_mainFragment_to_libraryFragment)
         }
     }
-
 }

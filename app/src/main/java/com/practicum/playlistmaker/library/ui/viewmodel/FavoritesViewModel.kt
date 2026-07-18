@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.library.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

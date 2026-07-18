@@ -7,8 +7,6 @@ import android.util.Log
 import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.search.data.dto.GetTracksRequest
 import com.practicum.playlistmaker.search.data.dto.NetResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class ItunesNetworkClient(
     private val context: Context,

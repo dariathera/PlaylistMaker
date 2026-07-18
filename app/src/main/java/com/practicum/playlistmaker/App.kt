@@ -12,6 +12,7 @@ import com.practicum.playlistmaker.library.di.libraryModule
 import com.practicum.playlistmaker.library.di.libraryViewModelModule
 import com.practicum.playlistmaker.player.di.audioplayerModule
 import com.practicum.playlistmaker.player.di.audioplayerViewModelModule
+import com.practicum.playlistmaker.root.di.sharedViewModelModule
 import com.practicum.playlistmaker.search.di.searchModule
 import com.practicum.playlistmaker.search.di.searchViewModelModule
 import com.practicum.playlistmaker.search_history.di.searchHistoryModule
@@ -47,7 +48,8 @@ App : Application(), KoinComponent {
                 settingsViewModelModule,
                 libraryViewModelModule,
                 databaseModule,
-                libraryModule
+                libraryModule,
+                sharedViewModelModule
             )
         }
 

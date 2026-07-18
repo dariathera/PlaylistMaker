@@ -18,6 +18,8 @@
         <item name="colorSecondaryVariant">@color/YP_White</item>
         <item name="colorOnSecondary">@color/YP_White</item>
         <!-- Customize your theme here. -->
+
+        <item name="materialAlertDialogTheme">@style/CustomAlertDialogTheme</item>
     </style>
 
     <style name="Theme.MainActivity" parent="Base.Theme.PlaylistMaker">

@@ -11,8 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class TracksRepositoryImpl(
-    private val networkClient: NetworkClient,
-    private val appDatabase: AppDatabase
+    private val networkClient: NetworkClient
 ): TracksRepository {
 
     override fun getMusic(expression: String) : Flow<Resource<MutableList<Track>>> = flow {
@@ -27,7 +26,6 @@ class TracksRepositoryImpl(
                     )
                 )
             is NetResponse.GoodNetResponse -> {
-                val favoriteIdList = appDatabase.getTrackDao().getTrackIds()
                 emit(
                     Resource.Success<MutableList<Track>>(
                         response.results.map { result ->
@@ -50,9 +48,6 @@ class TracksRepositoryImpl(
             is NetResponse.ServerError ->
                 emit(
                     Resource.Error<MutableList<Track>>(
-
-
-
                         "Ошибка сервера, код ${response.resultCode}"
                     )
                 )

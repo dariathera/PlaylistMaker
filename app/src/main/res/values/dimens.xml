@@ -16,5 +16,7 @@
     <dimen name="plainTextSection_iconMarginEnd">12dp</dimen>
     <dimen name="bigIconSize">120dp</dimen>
     <dimen name="bottomNavIconSize">24dp</dimen>
+    <dimen name="navText">12dp</dimen>
+    <dimen name="bottom_sheet_peek_height">200dp</dimen>
 
 </resources>
