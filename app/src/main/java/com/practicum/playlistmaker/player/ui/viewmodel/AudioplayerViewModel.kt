@@ -8,18 +8,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.App
-import com.practicum.playlistmaker.player.ui.mediaplayer.MediaplayerState
-import com.practicum.playlistmaker.player.ui.timer.TimeTextObserving
-import com.practicum.playlistmaker.player.ui.timer.TimerManager
-import com.practicum.playlistmaker.util.SingleLiveEvent
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.library.domain.FavoritesInteractor
 import com.practicum.playlistmaker.library.domain.PlaylistInteractor
 import com.practicum.playlistmaker.library.domain.PrivateStorageApi
 import com.practicum.playlistmaker.library.domain.entities.Playlist
 import com.practicum.playlistmaker.library.domain.entities.PlaylistGeneralInformation
+import com.practicum.playlistmaker.player.ui.mediaplayer.MediaplayerState
+import com.practicum.playlistmaker.player.ui.timer.TimeTextObserving
+import com.practicum.playlistmaker.player.ui.timer.TimerManager
 import com.practicum.playlistmaker.root.ui.viewmodel.SharedViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
+import com.practicum.playlistmaker.util.SingleLiveEvent
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.firstOrNull
@@ -188,7 +188,7 @@ class AudioplayerViewModel(
 
     fun handleClickOnPlaylist(id: Long, sharedViewModel: SharedViewModel){
         viewModelScope.launch(Dispatchers.IO) {
-            val trackIsAlreadyIncluded = async { isTrackincludedById(id) }
+            val trackIsAlreadyIncluded = async { isTrackIncludedById(id) }
             if (trackIsAlreadyIncluded.await()) {
                 notifyTrackAlreadyAdded(id, sharedViewModel)
                 } else {
@@ -207,7 +207,7 @@ class AudioplayerViewModel(
         }
     }
 
-    private suspend fun isTrackincludedById(id: Long) : Boolean {
+    private suspend fun isTrackIncludedById(id: Long) : Boolean {
         val trackIdList: List<Long> = playlistInteractor.getTracksIdListByPlaylistId(id)
         var trackIsAlreadyIncluded = false
         for (element in trackIdList) {
@@ -230,7 +230,6 @@ class AudioplayerViewModel(
             sharedViewModel.setToastMessage(
                 context.getString(R.string.added_to_playlist, playlist.playlist.name)
             )
-            val playlistUpdated =  playlistInteractor.getPlaylistById(id)
         }
     }
 

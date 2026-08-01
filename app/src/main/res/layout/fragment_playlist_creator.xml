@@ -23,6 +23,7 @@
             style="@style/ButtonGoBack"/>
 
         <TextView
+            android:id="@+id/title"
             android:text="@string/new_playlist"
             style="@style/SectionTitle" />
     </LinearLayout>

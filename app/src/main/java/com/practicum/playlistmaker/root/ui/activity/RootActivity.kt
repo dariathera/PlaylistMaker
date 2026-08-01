@@ -51,7 +51,7 @@ class RootActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.playlistCreatorFragment -> {
+                R.id.playlistFormFragment -> {
                     binding.bottomNavigationView.visibility = View.GONE
                     setupKeyboardResize(true)
                     currentLayoutIsSearchLayout = false
@@ -64,6 +64,11 @@ class RootActivity : AppCompatActivity() {
                 R.id.searchFragment -> {
                     setupKeyboardResize(true)
                     currentLayoutIsSearchLayout = true
+                }
+                R.id.playlistContentFragment -> {
+                    binding.bottomNavigationView.visibility = View.GONE
+                    setupKeyboardResize(false)
+                    currentLayoutIsSearchLayout = false
                 }
                 else -> {
                     binding.bottomNavigationView.visibility = View.VISIBLE

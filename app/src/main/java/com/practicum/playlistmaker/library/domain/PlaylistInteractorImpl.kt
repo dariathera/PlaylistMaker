@@ -2,9 +2,11 @@ package com.practicum.playlistmaker.library.domain
 
 import com.practicum.playlistmaker.library.domain.entities.Playlist
 import com.practicum.playlistmaker.library.domain.entities.PlaylistGeneralInformation
-import com.practicum.playlistmaker.search.domain.entities.Track
 
-class PlaylistInteractorImpl(private val repository : PlaylistApi) : PlaylistInteractor {
+class PlaylistInteractorImpl(
+    private val repository : PlaylistApi,
+    private val privateStorage: PrivateStorageApi
+) : PlaylistInteractor {
     override suspend fun addNewPlaylist(playlist: Playlist) : Long {
         return repository.addNewPlaylist(playlist)
     }
@@ -22,10 +24,33 @@ class PlaylistInteractorImpl(private val repository : PlaylistApi) : PlaylistInt
     }
 
     override suspend fun getPlaylistById(id: Long): Playlist? {
-        return repository.getPlaylistById(id)
+        return repository.getSortedPlaylistById(id)
     }
 
     override suspend fun getPlaylistNameByPlaylistId(id: Long): String? {
         return repository.getPlaylistNameByPlaylistId(id)
+    }
+
+    override suspend fun deleteTrackFromPlaylist(trackId: Long, playlistId: Long) {
+        repository.deleteTrackFromPlaylist(
+            trackId=trackId,
+            playlistId=playlistId
+        )
+    }
+
+    override suspend fun deletePlaylistById(id: Long) {
+        val playlist = getPlaylistById(id)
+        if (playlist != null) {
+            for (track in playlist.trackList) {
+                deleteTrackFromPlaylist(
+                    trackId=track.trackId,
+                    playlistId=id
+                )
+            }
+            privateStorage.deleteImage(
+                playlist.playlist.coverFileName
+            )
+            repository.deletePlaylist(id)
+        }
     }
 }

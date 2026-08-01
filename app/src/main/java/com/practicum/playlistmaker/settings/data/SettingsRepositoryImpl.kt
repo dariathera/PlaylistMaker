@@ -3,8 +3,8 @@ package com.practicum.playlistmaker.settings.data
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.practicum.playlistmaker.App
-import com.practicum.playlistmaker.util.Saver
 import com.practicum.playlistmaker.settings.domain.SettingsRepository
+import com.practicum.playlistmaker.util.Saver
 
 class SettingsRepositoryImpl(
     private val saverClient : Saver<Boolean>,

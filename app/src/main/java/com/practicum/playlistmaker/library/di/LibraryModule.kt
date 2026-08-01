@@ -12,6 +12,8 @@ import com.practicum.playlistmaker.library.domain.PlaylistApi
 import com.practicum.playlistmaker.library.domain.PlaylistInteractor
 import com.practicum.playlistmaker.library.domain.PlaylistInteractorImpl
 import com.practicum.playlistmaker.library.domain.PrivateStorageApi
+import com.practicum.playlistmaker.library.domain.UpdatePlaylistUseCase
+import com.practicum.playlistmaker.library.domain.UpdatePlaylistUseCaseImpl
 import org.koin.dsl.module
 
 val libraryModule = module {
@@ -32,11 +34,21 @@ val libraryModule = module {
     }
 
     single<PlaylistInteractor> {
-        PlaylistInteractorImpl(get())
+        PlaylistInteractorImpl(
+            get(),
+            get()
+        )
     }
 
     single<CreatePlaylistUseCase> {
         CreatePlaylistUseCaseImpl(
+            get(),
+            get()
+        )
+    }
+
+    single<UpdatePlaylistUseCase> {
+        UpdatePlaylistUseCaseImpl(
             get(),
             get()
         )

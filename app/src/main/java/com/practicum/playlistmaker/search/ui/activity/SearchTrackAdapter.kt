@@ -3,8 +3,8 @@ package com.practicum.playlistmaker.search.ui.activity
 import android.content.Context
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.practicum.playlistmaker.search_history.domain.GetHistoryInteractor
 import com.practicum.playlistmaker.search.domain.entities.Track
+import com.practicum.playlistmaker.search_history.domain.GetHistoryInteractor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -13,7 +13,8 @@ import org.koin.core.component.KoinComponent
 
 class SearchTrackAdapter (
     private val tracks: MutableList<Track>,
-    private val onItemClick: (track: Track) -> Unit
+    private val onItemClick: (track: Track) -> Unit,
+    private val onItemLongClick: ((track: Track) -> Unit)? = null
 ) : RecyclerView.Adapter<SearchTrackViewHolder> (), KoinComponent {
 
     private var myContext : Context? = null
@@ -40,6 +41,18 @@ class SearchTrackAdapter (
                 }
                 onItemClick(track)
             }
+        }
+
+        // Длинное нажатие — только если слушатель передан
+        if (onItemLongClick != null) {
+            holder.itemView.setOnLongClickListener {
+                val track = tracks[position]
+                onItemLongClick(track)
+                true // возвращаем true, чтобы событие не передавалось дальше (не вызывало обычный клик)
+            }
+        } else {
+            // Убираем старый слушатель, если он был (чтобы не было утечек)
+            holder.itemView.setOnLongClickListener(null)
         }
     }
 

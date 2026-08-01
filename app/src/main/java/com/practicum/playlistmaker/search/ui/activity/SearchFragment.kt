@@ -14,8 +14,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.practicum.playlistmaker.R
 import androidx.navigation.fragment.findNavController
+import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.activity.AudioplayerFragment
 import com.practicum.playlistmaker.root.ui.activity.RootActivity
@@ -23,7 +23,6 @@ import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModel
 import debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.getValue
 
 class SearchFragment : Fragment() {
     private lateinit var binding: FragmentSearchBinding

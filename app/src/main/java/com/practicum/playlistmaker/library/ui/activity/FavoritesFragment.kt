@@ -45,7 +45,6 @@ class FavoritesFragment : Fragment() {
 
         favoriteTrackAdapter = SearchTrackAdapter(
             ArrayDeque<Track>(),
-            // this,
             {track: Track ->
                 (activity as RootActivity).animateBottomNavigationView()
                 onTrackClickDebounce(track)

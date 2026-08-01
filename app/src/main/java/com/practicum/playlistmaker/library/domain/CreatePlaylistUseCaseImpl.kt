@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.library.domain
 
 import android.net.Uri
 import android.util.Log
+import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.library.domain.entities.Playlist
 import com.practicum.playlistmaker.library.domain.entities.PlaylistWithNoTracks
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +32,7 @@ class CreatePlaylistUseCaseImpl(
             )
             interactor.addNewPlaylist(playlist)
         } catch (e: Exception) {
-            Log.e("ImageSave", "Ошибка при создании плейлиста", e)
+            Log.e(App.ERROR_LOG_TAG, "Ошибка при создании плейлиста", e)
         }
     }
 }

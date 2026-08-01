@@ -14,9 +14,9 @@ import com.practicum.playlistmaker.App
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.practicum.playlistmaker.library.ui.viewmodel.PlaylistsViewModel
+import com.practicum.playlistmaker.root.ui.activity.RootActivity
 import debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.getValue
 
 class PlaylistsFragment : Fragment() {
 
@@ -46,7 +46,7 @@ class PlaylistsFragment : Fragment() {
                 PlaylistsState.NoPlaylists -> {
                     binding.textView.visibility = View.VISIBLE
                     binding.imageView.visibility = View.VISIBLE
-                    binding.recyclerView?.visibility = View.VISIBLE
+                    binding.recyclerView?.visibility = View.GONE
                 }
                 is PlaylistsState.UserPlaylists -> {
                     playlistAdapter?.updateData(it.playlists)
@@ -64,7 +64,8 @@ class PlaylistsFragment : Fragment() {
 
         binding.btnNewPlaylist.setOnClickListener { it ->
             findNavController().navigate(
-                R.id.action_libraryFragment_to_playlistCreatorFragment
+                R.id.action_libraryFragment_to_playlistFormFragment,
+                PlaylistFormFragment.createArgs()
             )
         }
 
@@ -78,7 +79,6 @@ class PlaylistsFragment : Fragment() {
         playlistAdapter = PlaylistAdapter(
             {id: Long ->
                 Log.d(App.DEBUG_LOG_TAG, "PlaylistsFragment: пользователь нажал на плейлист с id $id")
-                // Здесь должна быть логика нажатия на плейлист
                 onPlaylistClickDebounce(id)
             }
         )
@@ -89,7 +89,14 @@ class PlaylistsFragment : Fragment() {
             CLICK_DEBOUNCE_DELAY,
             viewLifecycleOwner.lifecycleScope,
             false
-        ) {}
+        ) { playlistId ->
+            (activity as RootActivity).animateBottomNavigationView()
+            findNavController().navigate(
+                R.id.action_libraryFragment_to_playlistContentFragment,
+                PlaylistContentFragment.createArgs(playlistId)
+            )
+        }
+
     }
 
     override fun onResume() {

@@ -65,4 +65,55 @@ class PrivateStorageApiImpl(private val context: Context) : PrivateStorageApi {
 
         return if (file.exists()) file.toUri() else null
     }
+
+    override suspend fun deleteImage(fileName: String?): Boolean =
+        withContext(Dispatchers.IO) {
+            val uri = getFileUri(fileName)
+
+            if (uri == null) {
+                Log.e("ImageSave", "deleteImage: URI is null")
+                return@withContext false
+            }
+
+            try {
+                when (uri.scheme) {
+                    "file" -> {
+                        val file = File(uri.path ?: "")
+                        if (!file.exists()) {
+                            Log.e("ImageSave", "deleteImage: file does not exist: ${file.absolutePath}")
+                            return@withContext false
+                        }
+                        val deleted = file.delete()
+                        if (deleted) {
+                            Log.d("ImageSave", "deleteImage: file deleted: ${file.absolutePath}")
+                        } else {
+                            Log.e("ImageSave", "deleteImage: failed to delete file: ${file.absolutePath}")
+                        }
+                        return@withContext deleted
+                    }
+                    "content" -> {
+                        try {
+                            val deletedRows = context.contentResolver.delete(uri, null, null)
+                            if (deletedRows > 0) {
+                                Log.d("ImageSave", "deleteImage: content deleted: $uri")
+                                return@withContext true
+                            } else {
+                                Log.e("ImageSave", "deleteImage: failed to delete content: $uri")
+                                return@withContext false
+                            }
+                        } catch (e: SecurityException) {
+                            Log.e("ImageSave", "deleteImage: SecurityException for $uri", e)
+                            return@withContext false
+                        }
+                    }
+                    else -> {
+                        Log.e("ImageSave", "deleteImage: unsupported URI scheme: ${uri.scheme}")
+                        return@withContext false
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("ImageSave", "deleteImage: unexpected error for $uri", e)
+                return@withContext false
+            }
+        }
 }

@@ -23,8 +23,11 @@
             android:id="@+id/action_libraryFragment_to_audioplayerFragment"
             app:destination="@id/audioplayerFragment" />
         <action
-            android:id="@+id/action_libraryFragment_to_playlistCreatorFragment"
-            app:destination="@id/playlistCreatorFragment" />
+            android:id="@+id/action_libraryFragment_to_playlistFormFragment"
+            app:destination="@id/playlistFormFragment" />
+        <action
+            android:id="@+id/action_libraryFragment_to_playlistContentFragment"
+            app:destination="@id/playlistContentFragment" />
     </fragment>
     <fragment
         android:id="@+id/audioplayerFragment"
@@ -32,8 +35,8 @@
         android:label="fragment_audioplayer"
         tools:layout="@layout/fragment_audioplayer" >
         <action
-            android:id="@+id/action_audioplayerFragment_to_playlistCreatorFragment"
-            app:destination="@id/playlistCreatorFragment" />
+            android:id="@+id/action_audioplayerFragment_to_playlistFormFragment"
+            app:destination="@id/playlistFormFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -41,8 +44,20 @@
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
     <fragment
-        android:id="@+id/playlistCreatorFragment"
-        android:name="com.practicum.playlistmaker.library.ui.activity.PlaylistCreatorFragment"
+        android:id="@+id/playlistFormFragment"
+        android:name="com.practicum.playlistmaker.library.ui.activity.PlaylistFormFragment"
         android:label="fragment_playlist_creator"
         tools:layout="@layout/fragment_playlist_creator" />
+    <fragment
+        android:id="@+id/playlistContentFragment"
+        android:name="com.practicum.playlistmaker.library.ui.activity.PlaylistContentFragment"
+        android:label="fragment_playlist_content"
+        tools:layout="@layout/fragment_playlist_content" >
+        <action
+            android:id="@+id/action_playlistContentFragment_to_audioplayerFragment"
+            app:destination="@id/audioplayerFragment" />
+        <action
+            android:id="@+id/action_playlistContentFragment_to_playlistFormFragment"
+            app:destination="@id/playlistFormFragment" />
+    </fragment>
 </navigation>
