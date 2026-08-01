@@ -19,6 +19,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentAudioplayerBinding
 import com.practicum.playlistmaker.library.domain.entities.PlaylistGeneralInformation
+import com.practicum.playlistmaker.library.ui.activity.PlaylistFormFragment
 import com.practicum.playlistmaker.player.ui.viewmodel.AudioplayerViewModel
 import com.practicum.playlistmaker.root.ui.viewmodel.SharedViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
@@ -28,7 +29,6 @@ import debounce
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.getValue
 
 class AudioplayerFragment : Fragment() {
 
@@ -85,7 +85,7 @@ class AudioplayerFragment : Fragment() {
         // Отображаем информацию о треке
         // Использовать новую версию метода не позволяет minSdkVersion = 29
         binding.apply {
-            trackName.text =  setText(track.trackName)
+            trackName.text = setText(track.trackName)
             artistName.text = setText(track.artistName)
             duration.text = setText(FormatTools.millisToMmss(track.trackTime))
             album.text = setText(track.album)
@@ -210,7 +210,8 @@ class AudioplayerFragment : Fragment() {
         binding.bottomsheet.btnNewPlaylist.setOnClickListener { it ->
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             findNavController().navigate(
-                R.id.action_audioplayerFragment_to_playlistCreatorFragment
+                R.id.action_audioplayerFragment_to_playlistFormFragment,
+                PlaylistFormFragment.createArgs()
             )
         }
     }

@@ -1,8 +1,6 @@
 package com.practicum.playlistmaker.library.domain.entities
 
-import android.net.Uri
 import androidx.room.Entity
-import androidx.room.Ignore
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -15,8 +13,6 @@ data class PlaylistWithNoTracks(
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
     var coverFileName: String? = null
-    @Ignore
-    var uri: Uri? = null
 
     constructor(
         _name: String,

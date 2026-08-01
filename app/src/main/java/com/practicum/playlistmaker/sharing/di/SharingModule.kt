@@ -10,6 +10,7 @@ import org.koin.dsl.module
 
 val sharingModule = module {
 
+
     single<ExternalNavigator> { (context: Context) ->
         ExternalNavigatorImpl(context)
     }

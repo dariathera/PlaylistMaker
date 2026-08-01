@@ -24,4 +24,7 @@ interface FavoriteDao {
 
     @Query("DELETE FROM favorite_table")
     suspend fun clearAll()
+
+    @Query("SELECT EXISTS(SELECT 1 FROM favorite_table WHERE trackId = :trackId)")
+    suspend fun isTrackFavorite(trackId: Long): Boolean
 }

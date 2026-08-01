@@ -46,9 +46,22 @@
     <string name="add_to_playlist">Add to playlist</string>
     <string name="added_to_playlist">Added to playlist %s</string>
     <string name="track_already_added">The track has already been added to the playlist %s</string>
-
-
-
-
+    <string name="open_extra_menu">Open extra menu</string>
+    <string name="share">Share to</string>
+    <string name="edit_data">Edit data</string>
+    <string name="delete_playlist">Delete the playlist</string>
+    <plurals name="duration_in_minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <string name="do_you_want_to_delete_the_track">Do you want to delete the image?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="no_tracks_to_share">This playlist does not have a list of tracks that can be shared</string>
+    <string name="do_you_want_to_delete_the_playlist">Do you want to delete the playlist «%s»?</string>
+    <string name="save">Save</string>
+    <string name="edit">Edit</string>
+    <string name="changes_saved">Changes are saved</string>
+    <string name="do_you_want_to_finish_editing_the_playlist">Do you want to finish editing the playlist?</string>
 
 </resources>

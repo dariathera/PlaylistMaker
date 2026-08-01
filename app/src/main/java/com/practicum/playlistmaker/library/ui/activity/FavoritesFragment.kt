@@ -26,9 +26,7 @@ class FavoritesFragment : Fragment() {
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         fun newInstance(number: Int) = FavoritesFragment().apply {
-            arguments = Bundle().apply {
-                // putInt(NUMBER, number)
-            }
+            arguments = Bundle().apply {}
         }
     }
 
@@ -45,7 +43,6 @@ class FavoritesFragment : Fragment() {
 
         favoriteTrackAdapter = SearchTrackAdapter(
             ArrayDeque<Track>(),
-            // this,
             {track: Track ->
                 (activity as RootActivity).animateBottomNavigationView()
                 onTrackClickDebounce(track)

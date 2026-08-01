@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
@@ -20,28 +21,45 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentPlaylistCreatorBinding
-import com.practicum.playlistmaker.library.ui.viewmodel.PlaylistCreatorViewModel
+import com.practicum.playlistmaker.library.ui.viewmodel.PlaylistFormViewModel
 import com.practicum.playlistmaker.root.ui.viewmodel.SharedViewModel
 import com.practicum.playlistmaker.util.DrawingTools
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
-import kotlin.getValue
 
-class PlaylistCreatorFragment  : Fragment() {
+class PlaylistFormFragment  : Fragment() {
 
     companion object {
         private const val roundRadiusDp: Float = 8f
 
-        fun newInstance(number: Int) = PlaylistCreatorFragment().apply {
-            arguments = Bundle().apply {}
-        }
+        private const val ARGS_PLAYLIST_ID = "playlist_id_key"
+        const val MODE_EDIT = "edit"
+        const val MODE_CREATE = "create"
+        const val NO_PLAYLIST_ID = -1L
+
+        fun createArgs(playlistId: Long = NO_PLAYLIST_ID): Bundle =
+            bundleOf(ARGS_PLAYLIST_ID to playlistId)
+
     }
 
     private val sharedViewModel: SharedViewModel by activityViewModel()
     private lateinit var binding: FragmentPlaylistCreatorBinding
-    private val viewModel: PlaylistCreatorViewModel by viewModel {
-        parametersOf(SavedStateHandle())
+    private val viewModel: PlaylistFormViewModel by viewModel {
+        parametersOf(
+            SavedStateHandle(),
+            requireArguments().getLong(ARGS_PLAYLIST_ID)
+        )
+    }
+    private val playlistId: Long by lazy {
+        requireArguments().getLong(ARGS_PLAYLIST_ID, NO_PLAYLIST_ID)
+    }
+    private val mode: String by lazy {
+        if (playlistId == NO_PLAYLIST_ID) {
+            MODE_CREATE
+        } else {
+            MODE_EDIT
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +70,17 @@ class PlaylistCreatorFragment  : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        when (mode) {
+            MODE_CREATE -> {
+                binding.title.text = getString(R.string.new_playlist)
+                binding.btnSave.text = getString(R.string.create)
+            }
+            MODE_EDIT -> {
+                binding.title.text = getString(R.string.edit)
+                binding.btnSave.text = getString(R.string.save)
+            }
+        }
 
         // Настраиваем отступы
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
@@ -84,7 +113,14 @@ class PlaylistCreatorFragment  : Fragment() {
         }
 
         binding.btnSave.setOnClickListener {
-            viewModel.createNewPlaylist(sharedViewModel)
+            when (mode) {
+                MODE_CREATE -> {
+                    viewModel.createNewPlaylist(sharedViewModel)
+                }
+                MODE_EDIT -> {
+                    viewModel.updatePlaylist(sharedViewModel)
+                }
+            }
         }
 
         viewModel.observeIsSavingCompleted().observe(viewLifecycleOwner){
@@ -167,11 +203,24 @@ class PlaylistCreatorFragment  : Fragment() {
             handleBack()
         }
 
+        // Загрузка данных плейлиста в режиме MODE_EDIT
+        viewModel.observeLoadedData().observe(viewLifecycleOwner) {
+            binding.apply {
+                Glide.with(coverImageView)
+                    .load(it.coverUri)
+                    .placeholder(R.drawable.ic_artwork_placeholder_45)
+                    .transform(
+                        CenterCrop()
+                    ).into(coverImageView)
+                inputName.editText?.setText(it.name)
+                inputDescription.editText?.setText(it.description)
+            }
+        }
     }
 
     // Общая логика при нажатии «Назад».
     private fun handleBack() {
-        if (!viewModel.formIsEmpty()) {
+        if (viewModel.formIsChanged()) {
             showExitConfirmationDialog()
         } else {
             findNavController().navigateUp()
@@ -179,8 +228,15 @@ class PlaylistCreatorFragment  : Fragment() {
     }
     // Подтверждающий диалог
     private fun showExitConfirmationDialog() {
+        var title = ""
+        when (mode) {
+            MODE_CREATE ->
+                title = getString(R.string.do_you_want_to_finish_creating_the_playlist)
+            MODE_EDIT ->
+                title = getString(R.string.do_you_want_to_finish_editing_the_playlist)
+        }
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.do_you_want_to_finish_creating_the_playlist))
+            .setTitle(title)
             .setMessage(getString(R.string.all_unsaved_data_will_be_lost))
             .setNeutralButton(getString(R.string.cancel)) { dialog, which ->
                 // Ничего не делаем

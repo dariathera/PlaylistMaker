@@ -1,11 +1,10 @@
 package com.practicum.playlistmaker.search.data
 
-import com.practicum.playlistmaker.db.data.AppDatabase
 import com.practicum.playlistmaker.search.data.client.NetworkClient
 import com.practicum.playlistmaker.search.data.dto.GetTracksRequest
 import com.practicum.playlistmaker.search.data.dto.NetResponse
-import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.search.domain.TracksRepository
+import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

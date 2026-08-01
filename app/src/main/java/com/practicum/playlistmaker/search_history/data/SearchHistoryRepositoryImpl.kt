@@ -4,8 +4,8 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.db.data.AppDatabase
 import com.practicum.playlistmaker.search.domain.entities.Track
-import com.practicum.playlistmaker.util.Saver
 import com.practicum.playlistmaker.search_history.domain.SearchHistoryRepository
+import com.practicum.playlistmaker.util.Saver
 
 class SearchHistoryRepositoryImpl (
     private val saverClient : Saver<String>,

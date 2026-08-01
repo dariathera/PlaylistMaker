@@ -2,11 +2,11 @@ package com.practicum.playlistmaker.db.data
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.library.domain.entities.PlaylistWithNoTracks
+import com.practicum.playlistmaker.search.domain.entities.Track
 
 @Database(
-    version = 9,
+    version = 10,
     entities = [
         Track::class,
         PlaylistWithNoTracks::class,
