@@ -26,9 +26,7 @@ class FavoritesFragment : Fragment() {
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         fun newInstance(number: Int) = FavoritesFragment().apply {
-            arguments = Bundle().apply {
-                // putInt(NUMBER, number)
-            }
+            arguments = Bundle().apply {}
         }
     }
 

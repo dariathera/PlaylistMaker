@@ -20,15 +20,24 @@ class UpdatePlaylistUseCaseImpl(
         uri: Uri?
     ): Unit = withContext(Dispatchers.IO + NonCancellable) {
         try {
-            val playlist: Playlist? = interactor.getPlaylistById(playlistId)
-            playlist?.playlist?.name = name
-            playlist?.playlist?.description = description
-            val oldCoverFileName = playlist?.playlist?.coverFileName
-            playlist?.playlist?.coverFileName = privateStorageSaver.saveImage(uri)
-            interactor.updatePlaylist(playlist)
-            if (oldCoverFileName != playlist?.playlist?.coverFileName) {
-                privateStorageSaver.deleteImage(oldCoverFileName)
+            val oldPlaylist: Playlist? = interactor.getPlaylistById(playlistId)
+            if (oldPlaylist == null) {
+                throw IllegalArgumentException("Внутри UpdatePlaylistUseCaseImpl получен playlist == null")
             }
+            val newPlaylistNoTracks = oldPlaylist.playlist.copy(
+                name = name,
+                description = description
+            )
+            val newPlaylist = oldPlaylist.copy(
+                playlist = newPlaylistNoTracks
+            )
+            newPlaylist.playlist.coverFileName = privateStorageSaver.saveImage(uri)
+            interactor.updatePlaylist(newPlaylist)
+            if (oldPlaylist.playlist.coverFileName != newPlaylist.playlist.coverFileName) {
+                privateStorageSaver.deleteImage(oldPlaylist.playlist.coverFileName)
+            }
+        } catch (e: IllegalArgumentException) {
+            Log.e(App.ERROR_LOG_TAG, e.message, e)
         } catch (e: Exception) {
             Log.e(App.ERROR_LOG_TAG, "Ошибка при обновлении плейлиста", e)
         }

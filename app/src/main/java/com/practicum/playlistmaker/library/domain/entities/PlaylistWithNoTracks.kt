@@ -7,14 +7,12 @@ import androidx.room.PrimaryKey
     tableName = "playlist_table"
 )
 data class PlaylistWithNoTracks(
-    var name: String,
-    var description: String,
+    val name: String,
+    val description: String,
 ) {
     @PrimaryKey(autoGenerate = true)
     var id: Long = 0
     var coverFileName: String? = null
-    // @Ignore
-    // var uri: Uri? = null
 
     constructor(
         _name: String,

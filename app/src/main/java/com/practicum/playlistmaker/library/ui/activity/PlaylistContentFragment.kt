@@ -8,6 +8,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -41,7 +42,11 @@ class PlaylistContentFragment: Fragment() {
         fun createArgs(playlistId: Long): Bundle =
             bundleOf(ARGS_PLAYLIST_ID to playlistId)
     }
-    private lateinit var binding: FragmentPlaylistContentBinding
+    private var _binding: FragmentPlaylistContentBinding? = null
+    private val binding get() = _binding!!
+    // !!! При использовании viewBinding во фрагментах обязательно
+    // нужно обнулять _binding в onDestroyView, иначе будет утечка памяти !!!
+
     private lateinit var viewModel: PlaylistContentViewModel
     private var trackAdapter : SearchTrackAdapter? = null
     private lateinit var onTrackClickDebounce: (Track) -> Unit
@@ -51,7 +56,7 @@ class PlaylistContentFragment: Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentPlaylistContentBinding.inflate(inflater, container, false)
+        _binding = FragmentPlaylistContentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -134,19 +139,19 @@ class PlaylistContentFragment: Fragment() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        binding.scrim.visibility = View.GONE
+                        binding.scrim.isVisible = false
                     }
                     else -> {
-                        binding.scrim.visibility = View.VISIBLE
+                        binding.scrim.isVisible = true
                     }
                 }
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {
                 if (slideOffset > 0) {
-                    binding.scrim.visibility = View.VISIBLE
+                    binding.scrim.isVisible = true
                 } else {
-                    binding.scrim.visibility = View.GONE
+                    binding.scrim.isVisible = false
                 }
             }
 
@@ -163,9 +168,9 @@ class PlaylistContentFragment: Fragment() {
                 name.text = it.name
                 if (it.description.isNotEmpty()) {
                     description.text = it.description
-                    description.visibility = View.VISIBLE
+                    description.isVisible = true
                 } else {
-                    description.visibility = View.GONE
+                    description.isVisible = false
                 }
                 generalDuration.text = context?.resources?.getQuantityString(
                     R.plurals.duration_in_minutes,
@@ -255,6 +260,11 @@ class PlaylistContentFragment: Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.updateState()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

@@ -40,17 +40,16 @@ class PlaylistInteractorImpl(
 
     override suspend fun deletePlaylistById(id: Long) {
         val playlist = getPlaylistById(id)
-        if (playlist != null) {
-            for (track in playlist.trackList) {
-                deleteTrackFromPlaylist(
-                    trackId=track.trackId,
-                    playlistId=id
-                )
-            }
-            privateStorage.deleteImage(
-                playlist.playlist.coverFileName
+        if (playlist == null) return
+        for (track in playlist.trackList) {
+            deleteTrackFromPlaylist(
+                trackId=track.trackId,
+                playlistId=id
             )
-            repository.deletePlaylist(id)
         }
+        privateStorage.deleteImage(
+            playlist.playlist.coverFileName
+        )
+        repository.deletePlaylist(id)
     }
 }
