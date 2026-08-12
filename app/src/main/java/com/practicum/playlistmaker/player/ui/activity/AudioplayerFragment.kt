@@ -107,18 +107,15 @@ class AudioplayerFragment : Fragment() {
                 )
             ).into(binding.artwork)
 
-        // Управление воспроизведением
-        viewModel.observeIsPlaying().observe(viewLifecycleOwner) {
-            if (it == true) {
-                binding.playButton.setImageResource(R.drawable.ic_pause_512)
-            } else {
-                binding.playButton.setImageResource(R.drawable.ic_play_512)
-            }
+        // Возвращаем кнопку воспроизведения в первоначальное состояние по завершении трека
+        viewModel.observeIsPlaybackCompleted().observe(viewLifecycleOwner) {
+            binding.playButton.setStatePlay()
         }
 
         viewModel.observeTimeText().observe(viewLifecycleOwner) {
             binding.currentTime.text = it
         }
+
 
         binding.playButton.setOnClickListener {
             viewModel.playbackControl()

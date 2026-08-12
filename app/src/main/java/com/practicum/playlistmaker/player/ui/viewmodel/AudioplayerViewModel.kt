@@ -60,6 +60,9 @@ class AudioplayerViewModel(
     private val hideBottomSheetLiveData = SingleLiveEvent<Unit>()
     fun observeHideBottomSheet(): LiveData<Unit> = hideBottomSheetLiveData
 
+    private val isPlaybackCompletedLiveData = SingleLiveEvent<Unit>()
+    fun observeIsPlaybackCompleted(): LiveData<Unit> = isPlaybackCompletedLiveData
+
     init {
         postValueisFavoriteLiveData()
         preparePlayer()
@@ -109,6 +112,7 @@ class AudioplayerViewModel(
             // Сбрасываем сохраненное состояние при завершении трека
             savedPlayerPosition = 0
             savedIsPlaying = false
+            isPlaybackCompletedLiveData.postValue(Unit)
         }
     }
 

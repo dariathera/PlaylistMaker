@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:layout_width="wrap_content"
+    tools:layout_height="wrap_content"
+    tools:layout_gravity="center"
+    tools:parentTag="android.widget.FrameLayout">
+
+    <!--
+    Установлено значение android:clickable="false",
+    так как обработка нажатия будет происходить на уровне custom view.
+    -->
+    <ImageButton
+        android:id="@+id/button"
+        android:layout_gravity="center"
+        style="@style/ReverseContentColor"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:scaleType="centerInside"
+        android:background="@drawable/round_button"
+        android:backgroundTint="?attr/colorOnPrimary"
+        android:clickable="false"/>
+
+</merge>
