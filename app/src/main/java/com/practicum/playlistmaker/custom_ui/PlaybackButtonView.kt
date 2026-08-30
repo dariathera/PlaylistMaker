@@ -113,11 +113,16 @@ internal class PlaybackButtonView @JvmOverloads constructor(
         }
     }
 
-    fun isStatePlay(): Boolean = state == STATE_PLAY
-
     fun setStatePlay() {
         if (state != STATE_PLAY) {
             state = STATE_PLAY
+            invalidate()
+        }
+    }
+
+    fun setStatePause() {
+        if (state != STATE_PAUSE) {
+            state = STATE_PAUSE
             invalidate()
         }
     }

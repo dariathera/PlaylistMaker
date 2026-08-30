@@ -1,10 +1,18 @@
 package com.practicum.playlistmaker.player.ui.activity
 
+import android.Manifest
+import android.content.ComponentName
+import android.content.Context.BIND_NOT_FOREGROUND
+import android.content.Intent
+import android.content.ServiceConnection
+import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -20,12 +28,15 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.databinding.FragmentAudioplayerBinding
 import com.practicum.playlistmaker.library.domain.entities.PlaylistGeneralInformation
 import com.practicum.playlistmaker.library.ui.activity.PlaylistFormFragment
+import com.practicum.playlistmaker.player.service.MusicService
+import com.practicum.playlistmaker.player.service.MusicServiceApi
 import com.practicum.playlistmaker.player.ui.viewmodel.AudioplayerViewModel
 import com.practicum.playlistmaker.root.ui.viewmodel.SharedViewModel
 import com.practicum.playlistmaker.search.domain.entities.Track
 import com.practicum.playlistmaker.util.DrawingTools
 import com.practicum.playlistmaker.util.FormatTools
 import debounce
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.core.parameter.parametersOf
@@ -35,7 +46,6 @@ class AudioplayerFragment : Fragment() {
     companion object {
         private const val CLICK_DEBOUNCE_DELAY = 1000L
         private const val ARGS_TRACK = "track_key"
-
         fun createArgs(track: Track): Bundle =
             bundleOf(ARGS_TRACK to track)
     }
@@ -49,7 +59,65 @@ class AudioplayerFragment : Fragment() {
     private lateinit var onClickDebounce: (Unit) -> Unit
     private var screenHeight: Int = 0
     private val sharedViewModel: SharedViewModel by activityViewModel()
+    private val serviceIntent by lazy {
+        Intent(requireContext(), MusicService::class.java).apply {
+            putExtra(MusicService.TRACK_KEY, currentTrack?.previewUrl)
+            putExtra(MusicService.TRACK_NAME_KEY, currentTrack?.trackName)
+            putExtra(MusicService.ARTIST_NAME_KEY, currentTrack?.artistName)
+        }
+    }
 
+    private var musicService: MusicServiceApi? = null
+    private var serviceIsBound = false
+    private val serviceConnection = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            val binder = service as MusicService.MusicServiceBinder
+            musicService = binder.getService() as MusicServiceApi
+            serviceIsBound = true
+            lifecycleScope.launch {
+                musicService?.timeText?.collect {
+                    binding.currentTime.text = it
+                }
+            }
+            lifecycleScope.launch {
+                musicService?.isPlaying?.collect {
+                    if (it) {
+                        binding.playButton.setStatePause()
+                    } else {
+                        binding.playButton.setStatePlay()
+                    }
+                }
+            }
+            lifecycleScope.launch {
+                musicService?.isPlaybackCompleted?.collect {
+                    if (it) {
+                        binding.playButton.setStatePlay()
+                    }
+                }
+            }
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            musicService = null
+            serviceIsBound = false
+        }
+    }
+
+    // Ланчер для одного разрешения
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted) {
+            // Разрешение получено – можно запускать сервис
+            startService()
+        } else {
+            // Разрешение не дано – покажите объяснение
+            binding.playButton.setStatePlay()
+            sharedViewModel.setToastMessage(
+                getString(R.string.you_need_to_provide_permission)
+            )
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentAudioplayerBinding.inflate(inflater, container, false)
@@ -82,7 +150,7 @@ class AudioplayerFragment : Fragment() {
             findNavController().navigateUp()
         }
 
-        // Отображаем информацию о треке
+        // Отображаем информацию о треке.
         // Использовать новую версию метода не позволяет minSdkVersion = 29
         binding.apply {
             trackName.text = setText(track.trackName)
@@ -107,18 +175,12 @@ class AudioplayerFragment : Fragment() {
                 )
             ).into(binding.artwork)
 
-        // Возвращаем кнопку воспроизведения в первоначальное состояние по завершении трека
-        viewModel.observeIsPlaybackCompleted().observe(viewLifecycleOwner) {
-            binding.playButton.setStatePlay()
-        }
-
-        viewModel.observeTimeText().observe(viewLifecycleOwner) {
-            binding.currentTime.text = it
-        }
-
-
         binding.playButton.setOnClickListener {
-            viewModel.playbackControl()
+            if (musicService == null) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                musicService?.playbackControl()
+            }
         }
 
         viewModel.observeShowMessage().observe(viewLifecycleOwner) {
@@ -220,6 +282,12 @@ class AudioplayerFragment : Fragment() {
         val displayMetrics = resources.displayMetrics
         screenHeight = displayMetrics.heightPixels
         viewModel.requestPlaylists()
+        musicService?.hideNotifications()
+
+        // для поворота экрана
+        if (!serviceIsBound) {
+            requireContext().bindService(serviceIntent, serviceConnection, BIND_NOT_FOREGROUND)
+        }
     }
 
     override fun onPause() {
@@ -228,8 +296,12 @@ class AudioplayerFragment : Fragment() {
             // не останавливаем воспроизведение при повороте
             return
         }
-        viewModel.pausePlayer()
-        viewModel.stopTimer()
+        musicService?.showNotifications()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService()
     }
 
     private fun setText(s: String?) : String {
@@ -238,6 +310,23 @@ class AudioplayerFragment : Fragment() {
 
     private fun setText(s: Int?) : String {
         return if (s == null) "" else s.toString()
+    }
+
+    private fun startService() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            requireContext().startForegroundService(serviceIntent)
+        } else {
+            requireContext().startService(serviceIntent)
+        }
+        requireContext().bindService(serviceIntent, serviceConnection, BIND_NOT_FOREGROUND)
+    }
+
+    private fun stopService() {
+        // Останавливаем сервис только если фрагмент действительно завершается (не при повороте)
+        if (!requireActivity().isChangingConfigurations) {
+            requireContext().unbindService(serviceConnection)
+            requireContext().stopService(Intent(requireContext(), MusicService::class.java))
+        }
     }
 
 }
