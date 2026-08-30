@@ -67,5 +67,7 @@
     <string name="edit">Редактировать</string>
     <string name="changes_saved">Изменения сохранены</string>
     <string name="do_you_want_to_finish_editing_the_playlist">Завершить редактирование плейлиста?</string>
+    <string name="you_need_to_provide_permission">Предоставьте разрешение. Оно необходимо для фонового воспроизведения музыки.</string>
+
 
 </resources>

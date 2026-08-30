@@ -63,5 +63,6 @@
     <string name="edit">Edit</string>
     <string name="changes_saved">Changes are saved</string>
     <string name="do_you_want_to_finish_editing_the_playlist">Do you want to finish editing the playlist?</string>
+    <string name="you_need_to_provide_permission">Please grant the permission. This is required for background music playback.</string>
 
 </resources>
