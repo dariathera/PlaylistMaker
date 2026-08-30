@@ -20,8 +20,10 @@ import com.practicum.playlistmaker.player.ui.mediaplayer.MediaplayerState
 import com.practicum.playlistmaker.player.ui.timer.TimeTextObserving
 import com.practicum.playlistmaker.player.ui.timer.TimerManager
 import com.practicum.playlistmaker.root.ui.activity.RootActivity
+import com.practicum.playlistmaker.search.domain.entities.Track
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import org.koin.android.ext.android.getKoin
 import org.koin.android.ext.android.inject
 import org.koin.core.parameter.parametersOf
@@ -40,9 +42,7 @@ internal class MusicService() : Service(), TimeTextObserving, MusicServiceApi {
 
     companion object {
         private const val LOG_TAG = "MusicService"
-        const val TRACK_KEY = "song_url"
-        const val ARTIST_NAME_KEY = "artist_name"
-        const val TRACK_NAME_KEY = "track_name"
+        const val TRACK_KEY = "track_key"
         private const val START_TIME_TEXT = "00:00"
 
     }
@@ -85,9 +85,13 @@ internal class MusicService() : Service(), TimeTextObserving, MusicServiceApi {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        songUrl = intent?.getStringExtra(TRACK_KEY) ?: ""
-        trackName = intent?.getStringExtra(TRACK_NAME_KEY) ?: ""
-        artistName = intent?.getStringExtra(ARTIST_NAME_KEY) ?: ""
+
+        val track = intent?.getParcelableExtra<Track>(TRACK_KEY)
+        if (track != null) {
+            songUrl = track.previewUrl ?: ""
+            trackName = track.trackName
+            artistName = track.artistName
+        }
         if (playerState == MediaplayerState.DEFAULT) {
             initMediaPlayer()
         }
@@ -119,7 +123,8 @@ internal class MusicService() : Service(), TimeTextObserving, MusicServiceApi {
                     if (savedPlayerPosition > 0) {
                         mediaPlayer.seekTo(savedPlayerPosition)
                     } else {
-                        _timeText.value = START_TIME_TEXT
+                        // _timeText.value = START_TIME_TEXT // ❌ Потенциальная гонка
+                        _timeText.update { currentValue -> START_TIME_TEXT } // ✅ Гарантирует атомарность, даёт доступ к предыдущему значению
                     }
                     playerState = if (savedIsPlaying) {
                         mediaPlayer.start()

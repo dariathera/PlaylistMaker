@@ -61,9 +61,7 @@ class AudioplayerFragment : Fragment() {
     private val sharedViewModel: SharedViewModel by activityViewModel()
     private val serviceIntent by lazy {
         Intent(requireContext(), MusicService::class.java).apply {
-            putExtra(MusicService.TRACK_KEY, currentTrack?.previewUrl)
-            putExtra(MusicService.TRACK_NAME_KEY, currentTrack?.trackName)
-            putExtra(MusicService.ARTIST_NAME_KEY, currentTrack?.artistName)
+            putExtra(MusicService.TRACK_KEY, currentTrack)
         }
     }
 
